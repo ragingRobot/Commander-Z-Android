@@ -28,11 +28,11 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
         private Character character;
    
         
-		public GameDisplay(Context context, int dpi)
+		public GameDisplay(Context context)
 		{
 			
 		    super(context);
-		    this.dpi = dpi;
+		    this.dpi = 120;
 		    holder = getHolder();
 	        holder.addCallback(this);
 	       
