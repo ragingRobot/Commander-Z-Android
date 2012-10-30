@@ -1,4 +1,5 @@
 package com.commanderZ;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,32 +12,25 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback {
-	
-	
-		private SurfaceHolder holder;
-        private GameDisplayThread gameDisplayThread;
-        int[][] map;
-        Rect tileScreenLocation;
-        Rect tileLocation;
-        int tileWidth = 67;
-        int tileHeight = 67;
-        int adjustedTileHeight;
-        int adjustedTileWidth;
-        int dpi;
-        Canvas puck;
-        Bitmap puckImage;
-        private Bitmap tiles;
-        private Character character;
-   
+		/////////////////////////////////////////////////////////////////////////////////////
+		//PRIVATE VARIABLES
+		/////////////////////////////////////////////////////////////////////////////////////
+		private SurfaceHolder _holder;
+        private GameDisplayThread _gameDisplayThread;
+        private Rect _tileScreenLocation;
+        private Rect _tileLocation;
+        private Canvas _puck;
+        private Bitmap _puckImage;
+        private Bitmap _tiles;
+        private Character _character;
         
+		/////////////////////////////////////////////////////////////////////////////////////
+		//SETUP STUFF
+		/////////////////////////////////////////////////////////////////////////////////////
 		public GameDisplay(Context context)
 		{
-			
 		    super(context);
 		    init();
-		    
-		       
-           
 		}
 		public GameDisplay(Context context, AttributeSet attrs) {
 			super( context, attrs );
@@ -46,125 +40,94 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			super( context, attrs, defStyle );
 			init();
 		}
-			private void init(){
-				this.dpi = 240;
-			    holder = getHolder();
-		        holder.addCallback(this);
-		       
-		        //tiles = BitmapFactory.decodeResource(getResources(), R.drawable.btn_radio);
-			
-			}
-		public int[][] getMap(){
-			return map;
+		private void init(){
+			_holder = getHolder();
+		    _holder.addCallback(this);
 		}
 		
+		@SuppressLint("UseValueOf")
 		private void createBitmaps(){
-			 
-		      
-			tileScreenLocation = new Rect();
-			tileLocation = new Rect();
-			tiles = BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.tiles);
-			character = new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz), this);
-			 map = new int[][] {{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,2,2,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,1,1,0,0,0,0,0,0,0,0,1},{1,1,1,1,1,1,1,1,1,1,1,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,2,0,0,2,0,0,2,0,0,2,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,2,2,2,0,0,0,2,2,2,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,1,1,0,0,0,0,0,0,0,1},{1,1,1,1,1,0,0,0,1,1,1,1,1,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,2,2,0,0,2,2,2,0,0,0,2,2,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,1,1,0,0,0,1,1,1,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,2,2,0,0,0,0,0,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,0,0,2,2,0,0,0,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
-			 //120 is the dpi of the sprite sheet
-			 if(dpi != 120){
-				 adjustedTileWidth = tileWidth / (dpi/120);
-				 adjustedTileHeight = tileHeight  / (dpi/120);
-			 }else{
-				 adjustedTileWidth =  tileWidth;
-				 adjustedTileHeight = tileHeight;
-				 
-			 }
-			 
-			 Log.d("test","tileWidth="+ adjustedTileHeight );
-			 
-			 int w = adjustedTileWidth * map[0].length, h = adjustedTileHeight * map.length;
+			_tileScreenLocation = new Rect();
+			_tileLocation = new Rect();
+			_tiles = BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.tiles);
+			_character = new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz));
+			GameDataManager.getInstance().setCurrentMap(new int[][] {{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,2,2,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,1,1,0,0,0,0,0,0,0,0,1},{1,1,1,1,1,1,1,1,1,1,1,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,2,0,0,2,0,0,2,0,0,2,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,2,2,2,0,0,0,2,2,2,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,1,1,0,0,0,0,0,0,0,1},{1,1,1,1,1,0,0,0,1,1,1,1,1,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,2,2,0,0,2,2,2,0,0,0,2,2,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,1,1,0,0,0,1,1,1,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,2,2,0,0,0,0,0,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,0,0,0,0,0,2,2,0,0,0,0,0,1},{1,0,0,0,0,0,0,0,0,0,0,0,0,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1}});
+			GameDataManager.getInstance().setDpi(240);
+			
+			int w =  GameDataManager.getInstance().getTileWidth() * GameDataManager.getInstance().getCurrentMap()[0].length, h =  GameDataManager.getInstance().getOriginalTileHeight() * GameDataManager.getInstance().getCurrentMap().length;
 
-			 Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-			 puckImage = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
-			 puck = new Canvas(puckImage);
-			 puck = drawTiles(puck);
-
-			 
+			Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+			_puckImage = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
+			_puck = new Canvas(_puckImage);
+			_puck = drawTiles(_puck);
 		}
-
-		public void surfaceChanged(SurfaceHolder holder, int format, int width,
-				int height) {
-			// TODO Auto-generated method stub
+		
+		/////////////////////////////////////////////////////////////////////////////////////
+		//HANDEL EVENTS
+		/////////////////////////////////////////////////////////////////////////////////////
+		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 			
 		}
 
 		public void surfaceCreated(SurfaceHolder holder) {
-			// TODO Auto-generated method stub
 			createBitmaps();
-			gameDisplayThread = new GameDisplayThread (holder, this);
-			gameDisplayThread.setRunning(true);
-			gameDisplayThread.start();
-		    
-			
+			_gameDisplayThread = new GameDisplayThread (holder, this);
+			_gameDisplayThread.setRunning(true);
+			_gameDisplayThread.start();
 		}
-
 		public void surfaceDestroyed(SurfaceHolder holder) {
-			// TODO Auto-generated method stub
 			 boolean retry = true;
-			 gameDisplayThread.setRunning(false);
+			 _gameDisplayThread.setRunning(false);
 			    while (retry) {
 			        try {
-			        	gameDisplayThread.join();
+			        	_gameDisplayThread.join();
 			            retry = false;
 			        } catch (InterruptedException e) {
 			        }
 			    }
-			
 		}
-		public void left(boolean val){
-			
-			character.left(val);
-		}
-		
-		public void right(boolean val){
-			character.right(val);
-			
-		}
-		
-		 @Override
-		    public void onDraw(Canvas canvas) {
-			
-		    
+
+		@Override
+		public void onDraw(Canvas canvas) {
 		        canvas.drawColor(Color.BLACK);
-		        canvas.drawBitmap(puckImage, 0, 0, null);
-		        Bitmap charImage = character.draw();
-		        tileScreenLocation.set( character.getX() ,character.getY(), character.getX() + adjustedTileWidth, character.getY() + (adjustedTileHeight * 2));
-		        tileLocation.set(0, 0 ,  tileWidth , tileHeight * 2);
-		        canvas.drawBitmap(charImage, tileLocation, tileScreenLocation, null);
-		        
-                
-		    }
+		        canvas.drawBitmap(_puckImage, 0, 0, null);
+		        Bitmap charImage = _character.draw();
+		        _tileScreenLocation.set( _character.getX() ,_character.getY(), _character.getX() +  GameDataManager.getInstance().getTileWidth(), _character.getY() + ( GameDataManager.getInstance().getTileHeight() * 2));
+		        _tileLocation.set(0, 0 ,  GameDataManager.getInstance().getOriginalTileWidth() , GameDataManager.getInstance().getOriginalTileHeight() * 2);
+		        canvas.drawBitmap(charImage, _tileLocation, _tileScreenLocation, null);   
+		}
 		 
-		 
-		 private Canvas drawTiles(Canvas canvas){
-			  
-		        for( int i =0 ;i < map.length ; i++){
-		        	for( int j =0; j < map[i].length ; j++){
+		/////////////////////////////////////////////////////////////////////////////////////
+		//OTHER FUNCTIONS
+		///////////////////////////////////////////////////////////////////////////////////// 
+		private Canvas drawTiles(Canvas canvas){
+			
+			 int tileWidth = GameDataManager.getInstance().getOriginalTileWidth();
+		     int tileHeight = GameDataManager.getInstance().getOriginalTileHeight();
+		     int adjustedTileWidth =  GameDataManager.getInstance().getTileWidth();
+		     int adjustedTileHeight = GameDataManager.getInstance().getTileHeight();
+				 
+		        for( int i =0 ;i < GameDataManager.getInstance().getCurrentMap().length ; i++){
+		        	for( int j =0; j < GameDataManager.getInstance().getCurrentMap()[i].length ; j++){
 		        		
 				        //this sets the location of the tile on the game screen
 		        		//note: this is diff from as3 or javascript because the rect represents top left corner and bottom right corner
 		        		// instead of top left corner and width and height
-				        tileScreenLocation.set( j * adjustedTileWidth , i * adjustedTileHeight, (j * adjustedTileWidth) + adjustedTileWidth, (i * adjustedTileHeight) + adjustedTileHeight);
+				        _tileScreenLocation.set( j * adjustedTileWidth , i * adjustedTileHeight, (j * adjustedTileWidth) + adjustedTileWidth, (i * adjustedTileHeight) + adjustedTileHeight);
 				        
 				        //this sets the location of the tile on the tile map
 				        //note: this is diff from as3 or javascript because the rect represents top left corner and bottom right corner
 		        		// instead of top left corner and width and height
-				        tileLocation.set(map[i][j] * tileWidth, 0 , (map[i][j] * tileWidth) + tileWidth , tileHeight);
+				        _tileLocation.set(GameDataManager.getInstance().getCurrentMap()[i][j] * tileWidth, 0 , (GameDataManager.getInstance().getCurrentMap()[i][j] * tileWidth) + tileWidth , tileHeight);
 				     
 				        //Log.d("test", "dpi= " + dpi);
 				        //this draws the tile to the screen
-				        canvas.drawBitmap(tiles, tileLocation, tileScreenLocation, null);
+				        canvas.drawBitmap(_tiles, _tileLocation, _tileScreenLocation, null);
 		        	}
 		        }
 			 return canvas;
-		 }
-
-		
-		    
+		}
+		/////////////////////////////////////////////////////////////////////////////////////
+		//END :D
+		/////////////////////////////////////////////////////////////////////////////////////
 }

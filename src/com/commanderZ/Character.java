@@ -5,74 +5,98 @@ import android.util.Log;
 import android.widget.Button;
 
 public class Character {
-	private Bitmap character;
-    private int x =200;
-    private int y = 20;
-    int tileHeight = 33;
-    int tileWidth = 33;
-    int gravity = 5;
-    int speed = 2;
-    private boolean right = false;
-    private boolean left = false;
-    private GameDisplay display;
-    public Character(Bitmap charImage, GameDisplay display){
-    	this.character = charImage;
-    	this.display = display;
-    	
-    	
+	/////////////////////////////////////////////////////////////////////////////////////
+	//PRIVATE VARIABLES
+	/////////////////////////////////////////////////////////////////////////////////////
+	private Bitmap _character;
+    private int _x =200;
+    private int _y = 20;
+    private int _gravity = 5;
+    private float _speed = 0;
+
     
+	/////////////////////////////////////////////////////////////////////////////////////
+	//SETUP STUFF
+	/////////////////////////////////////////////////////////////////////////////////////
+    public Character(Bitmap charImage){
+    	this._character = charImage;
     }
     
+	/////////////////////////////////////////////////////////////////////////////////////
+	//EVENT HANDELING
+	/////////////////////////////////////////////////////////////////////////////////////
     public Bitmap draw(){
-    	int[][] map = display.getMap();
-    	int tileBellow = Math.round((y + (tileHeight * 2) + gravity)/tileHeight);
-    	int tileRight = Math.round((x + (tileWidth) + speed)/tileWidth);
-    	int tileLeft = Math.round((x  - speed)/tileWidth);
+    	int tileBellow = Math.round((_y + ( GameDataManager.getInstance().getTileHeight() * 2) + _gravity)/ GameDataManager.getInstance().getTileHeight());
+    	int tileRight = Math.round((_x + (GameDataManager.getInstance().getTileWidth()) + _speed)/ GameDataManager.getInstance().getTileWidth());
+    	int tileLeft = Math.round((_x  + _speed - 15)/ GameDataManager.getInstance().getTileWidth());
     	
-    	//Log.d("test", "tileBellow= " + tileBellow);
-    	
-    	
-    	if(tileBellow < map.length - 1){
-	    	if(map[tileBellow][Math.round((x + (tileWidth/2))/tileWidth)] == 0){
-	    		this.y += gravity;
+    	if(tileBellow < GameDataManager.getInstance().getCurrentMap().length - 1){
+	    	if(GameDataManager.getInstance().getCurrentMap()[tileBellow][Math.round((_x + ( GameDataManager.getInstance().getTileWidth()/2))/ GameDataManager.getInstance().getTileWidth())] == 0){
+	    		this._y += _gravity;
 	    	}else{
-	    		this.y = (tileBellow * tileHeight) - (tileHeight * 2);
+	    		this._y = (tileBellow *  GameDataManager.getInstance().getTileHeight()) - ( GameDataManager.getInstance().getTileHeight() * 2);
 	    	}
     	}
     	
-    	if(right)
+    	if(GameDataManager.getInstance().getMovingRight())
     	{
-    		if(map[Math.round((y + (tileHeight))/tileHeight)][tileRight] == 0){
-    			this.x += speed;
-	    	}else{
-	    		this.x = (tileRight*tileWidth) - tileWidth;
-	    	}
+    		if(_speed < 5){
+    			_speed ++;
+    		}
     		
     	}
-    	
-    	if(left)
+    	else if(GameDataManager.getInstance().getMovingLeft())
     	{
-    		if(map[Math.round((y + (tileHeight))/tileHeight)][tileLeft] == 0){
-    			this.x -= speed;
+    		if(_speed > -5){
+    			_speed --;
+    		}
+    		
+    		
+    	} else{
+    		if(_speed >0){
+    			_speed -= Math.abs(_speed) * .12;
+    		}
+    		
+    		if(_speed < 0){
+    			_speed += Math.abs(_speed) * .12;
+    		}
+    	}
+    	
+    	
+    	if(_speed > 0){
+    		if(GameDataManager.getInstance().getCurrentMap()[Math.round((_y + ( GameDataManager.getInstance().getTileHeight()))/ GameDataManager.getInstance().getTileHeight())][tileRight] == 0){
+    			this._x += _speed;
 	    	}else{
-	    		this.x = (tileLeft*tileWidth) + tileWidth;
+	    		this._x = (tileRight* GameDataManager.getInstance().getTileWidth()) -  GameDataManager.getInstance().getTileWidth();
+	    		
+	    	}
+    	}
+    	
+    	if(_speed < 0){
+    		
+    		if(GameDataManager.getInstance().getCurrentMap()[Math.round((_y + ( GameDataManager.getInstance().getTileHeight()))/ GameDataManager.getInstance().getTileHeight())][tileLeft] == 0){
+    			this._x += _speed;
+	    	}else{
+	    		this._x = (tileLeft* GameDataManager.getInstance().getTileWidth()) +  GameDataManager.getInstance().getTileWidth();
+	    		
 	    	}
     	}
     	
     	
-    	return character;
+    	return _character;
     }
-    public void left(boolean val){
-    	this.left = val;
-    }
-    public void right(boolean val){
-    		this.right = val;
-    }
+    
+	/////////////////////////////////////////////////////////////////////////////////////
+	//GETTERS
+	/////////////////////////////////////////////////////////////////////////////////////
     public int getX()
     {
-    	return x;
+    	return _x;
     }
     public int getY(){
-    	return y;
+    	return _y;
     }
+	/////////////////////////////////////////////////////////////////////////////////////
+	//END :D
+	/////////////////////////////////////////////////////////////////////////////////////
 }

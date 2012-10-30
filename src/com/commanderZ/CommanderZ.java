@@ -11,7 +11,13 @@ import android.view.Window;
 import android.widget.Button;
 
 public class CommanderZ extends Activity {
-	private GameDisplay view;
+	/////////////////////////////////////////////////////////////////////////////////////
+	//PRIVATE VARIABLES
+	/////////////////////////////////////////////////////////////////////////////////////
+	
+	/////////////////////////////////////////////////////////////////////////////////////
+	//SETUP STUFF
+	/////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	DisplayMetrics dm = new DisplayMetrics();
@@ -19,11 +25,7 @@ public class CommanderZ extends Activity {
 	       
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //view = new GameDisplay(this, dm.densityDpi);
-        //Button button = new Button(this);
         setContentView(R.layout.gamescreen); 
-        
-        view = (GameDisplay) findViewById(R.id.surfaceView1);
         
         Button leftButton = (Button) findViewById(R.id.button1);
         leftButton.setOnTouchListener(leftListener);
@@ -34,52 +36,33 @@ public class CommanderZ extends Activity {
         
     }
     
-    
+	/////////////////////////////////////////////////////////////////////////////////////
+	//EVENT HANDELING
+	/////////////////////////////////////////////////////////////////////////////////////
     public OnTouchListener rightListener = new OnTouchListener() {
-   
     	        public boolean onTouch(View v, MotionEvent event) {
-    	
     	            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-    	
-    	                Log.d("base", "rightDown");
-    	                view.right(true);
-    	
+    	                GameDataManager.getInstance().setMovingRight(true);
     	            }
-    	            
     	            if (event.getAction() == MotionEvent.ACTION_UP) {
-    	            	
-    	                Log.d("base", "rightUp");
-    	                view.right(false);
+    	                GameDataManager.getInstance().setMovingRight(false);
     	            }
-    
     	            return false;
-    	
     	        }
-    	
     };
-    
-    public OnTouchListener leftListener = new OnTouchListener() {
-    	   
+    public OnTouchListener leftListener = new OnTouchListener() {  
         public boolean onTouch(View v, MotionEvent event) {
-
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-                Log.d("base", "leftDown");
-                view.left(true);
+                GameDataManager.getInstance().setMovingLeft(true);
             }
-            
             if (event.getAction() == MotionEvent.ACTION_UP) {
-            	
-                Log.d("base", "leftUp");
-                view.left(false);
+                GameDataManager.getInstance().setMovingLeft(false);
             }
-
             return false;
-
         }
-
     };
-
-    
+	/////////////////////////////////////////////////////////////////////////////////////
+	//END :D
+	/////////////////////////////////////////////////////////////////////////////////////
   
 }
