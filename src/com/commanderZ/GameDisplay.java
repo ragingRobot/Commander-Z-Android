@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -32,15 +33,27 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 		{
 			
 		    super(context);
-		    this.dpi = 120;
-		    holder = getHolder();
-	        holder.addCallback(this);
-	       
-	        //tiles = BitmapFactory.decodeResource(getResources(), R.drawable.btn_radio);
+		    init();
+		    
 		       
            
 		}
-		
+		public GameDisplay(Context context, AttributeSet attrs) {
+			super( context, attrs );
+			init();
+		}
+		public GameDisplay(Context context, AttributeSet attrs, int defStyle) {
+			super( context, attrs, defStyle );
+			init();
+		}
+			private void init(){
+				this.dpi = 240;
+			    holder = getHolder();
+		        holder.addCallback(this);
+		       
+		        //tiles = BitmapFactory.decodeResource(getResources(), R.drawable.btn_radio);
+			
+			}
 		public int[][] getMap(){
 			return map;
 		}
@@ -63,6 +76,7 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 				 
 			 }
 			 
+			 Log.d("test","tileWidth="+ adjustedTileHeight );
 			 
 			 int w = adjustedTileWidth * map[0].length, h = adjustedTileHeight * map.length;
 
@@ -101,6 +115,15 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			        } catch (InterruptedException e) {
 			        }
 			    }
+			
+		}
+		public void left(boolean val){
+			
+			character.left(val);
+		}
+		
+		public void right(boolean val){
+			character.right(val);
 			
 		}
 		
