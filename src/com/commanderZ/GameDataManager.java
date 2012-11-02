@@ -14,9 +14,13 @@ public class GameDataManager {
 		private boolean _jumping = false;
 		private int _tileHeight;
         private int _tileWidth;
+        private int _charHeight;
+        private int _charWidth;
         private int _dpi;
         private int _originalTileWidth = 67;
         private int _originalTileHeight = 67;
+        private int _originalCharWidth = 100;
+        private int _originalCharHeight = 140;
         private int[][] _map;
 		/////////////////////////////////////////////////////////////////////////////////////
 		//STATIC FUNCTIONS
@@ -47,11 +51,23 @@ public class GameDataManager {
 		public int getTileWidth(){
 			return _tileWidth;
 		}
+		public int getCharHeight(){
+			return _charHeight;
+		}
+		public int getCharWidth(){
+			return _charWidth;
+		}
 		public int getOriginalTileHeight(){
 			return _originalTileHeight;
 		}
 		public int getOriginalTileWidth(){
 			return _originalTileWidth;
+		}
+		public int getOriginalCharHeight(){
+			return _originalCharHeight;
+		}
+		public int getOriginalCharWidth(){
+			return _originalCharWidth;
 		}
 		public int getDpi(){
 			return _dpi;
@@ -76,9 +92,16 @@ public class GameDataManager {
 			 if(_dpi != 120){
 				 _tileWidth = _originalTileWidth / (_dpi/120);
 				 _tileHeight = _originalTileHeight  / (_dpi/120);
+				 
+				 _charWidth = _originalCharWidth / (_dpi/120);
+				 _charHeight = _originalCharHeight  / (_dpi/120);
+				 
 			 }else{
 				 _tileWidth =  _originalTileWidth;
 				 _tileHeight = _originalTileHeight;
+				 
+				 _charWidth =  _originalCharWidth;
+				 _charHeight = _originalCharHeight;
 				 
 			 }
 		}

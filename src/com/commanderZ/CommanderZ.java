@@ -34,6 +34,14 @@ public class CommanderZ extends Activity {
         Button rightButton = (Button) findViewById(R.id.button2);
         rightButton.setOnTouchListener(rightListener);
         
+        
+        Button shootButton = (Button) findViewById(R.id.button3);
+        shootButton.setOnTouchListener(shootListener);
+        
+        
+        Button jumpButton = (Button) findViewById(R.id.button4);
+        jumpButton.setOnTouchListener(jumpListener);
+        
     }
     
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +65,30 @@ public class CommanderZ extends Activity {
             }
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 GameDataManager.getInstance().setMovingLeft(false);
+            }
+            return false;
+        }
+    };
+    
+    public OnTouchListener shootListener = new OnTouchListener() {  
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                //GameDataManager.getInstance().setMovingLeft(true);
+            }
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                //GameDataManager.getInstance().setMovingLeft(false);
+            }
+            return false;
+        }
+    };
+    
+    public OnTouchListener jumpListener = new OnTouchListener() {  
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                GameDataManager.getInstance().setJumping(true);
+            }
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+            	 GameDataManager.getInstance().setJumping(false);
             }
             return false;
         }
