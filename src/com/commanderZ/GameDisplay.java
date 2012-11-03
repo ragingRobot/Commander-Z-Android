@@ -5,11 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback {
 		/////////////////////////////////////////////////////////////////////////////////////
@@ -22,6 +25,10 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
         private Canvas _puck;
         private Bitmap _puckImage;
         private Bitmap _tiles;
+        private Bitmap _levelBitmap;
+        private Canvas _level;
+        private Rect _camera;
+        private Rect _screen;
         private Character _character;
         
 		/////////////////////////////////////////////////////////////////////////////////////
@@ -45,44 +52,34 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 		    _holder.addCallback(this);
 		}
 		
-		@SuppressLint("UseValueOf")
+		@SuppressLint({ "UseValueOf", "NewApi" })
 		private void createBitmaps(){
-			GameDataManager.getInstance().setCurrentMap(new int[][] {{1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,1,0,1,1,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,1,1,1,1,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,1,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,1,1,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,1,1,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,1,1,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,1,1,1,0,0,0,0,0,1,1,1,1,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-																	 {1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-																	 {1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-																	 {1,1,1,1,1,1,1,1,1,1,1,1,1,1}});
+			
 			GameDataManager.getInstance().setDpi(240);
 			_tileScreenLocation = new Rect();
 			_tileLocation = new Rect();
+			_camera = new Rect();
+			_screen = new Rect();
+			
 			_tiles = BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.tiles);
 			_character = new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz));
 			
 			
 			int w =  GameDataManager.getInstance().getTileWidth() * GameDataManager.getInstance().getCurrentMap()[0].length, h =  GameDataManager.getInstance().getOriginalTileHeight() * GameDataManager.getInstance().getCurrentMap().length;
-
+			
+			
+			
+		
+			_camera.set(0,0,this.getWidth(),this.getHeight());
+			_screen.set(0,0,this.getWidth(),this.getHeight());
 			Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
 			_puckImage = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
 			_puck = new Canvas(_puckImage);
-			_puck = drawTiles(_puck);
+			
+			_levelBitmap = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
+			_level = new Canvas(_levelBitmap);
+			
+			_level = drawTiles(_level);
 		}
 		
 		/////////////////////////////////////////////////////////////////////////////////////
@@ -112,15 +109,31 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 
 		@Override
 		public void onDraw(Canvas canvas) {
-		        canvas.drawColor(Color.BLACK);
-		        canvas.drawBitmap(_puckImage, 0, 0, null);
-		        Bitmap charImage = _character.draw();
+		
+				_puck.drawBitmap(_levelBitmap, 0,0 , null);
+		        
+		       
+		    	Bitmap charImage = _character.draw();
+		        
 		        _tileScreenLocation.set( _character.getX() ,_character.getY(), _character.getX() +  GameDataManager.getInstance().getCharWidth(), _character.getY() +  GameDataManager.getInstance().getCharHeight());
 		        _tileLocation.set(0, 0 ,  GameDataManager.getInstance().getCharWidth() , GameDataManager.getInstance().getCharHeight());
-		        canvas.drawBitmap(charImage, _tileLocation, _tileScreenLocation, null);   
+		        _puck.drawBitmap(charImage, _tileLocation, _tileScreenLocation, null); 
+		        canvas.drawColor(Color.BLACK);
+		        canvas.drawBitmap(_puckImage, _camera, _screen, null);
 		}
 		
 		public void updatePhysics(int fps){
+			int paddingBottom = (_camera.height()/3);
+	
+			int newX = _character.getX() - (_camera.width()/2);
+			 
+			int newY = _character.getY() - _camera.height() + paddingBottom;
+			 
+			 
+			_camera.set(  newX, newY ,newX + _camera.width(),newY + _camera.height());
+				
+				
+		
 			_character.updatePhysics(fps);
 			
 		}

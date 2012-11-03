@@ -15,8 +15,8 @@ public class Character {
 	/////////////////////////////////////////////////////////////////////////////////////
 	private Bitmap _character;
     private int _x =200;
-    private int _y = 20;
-    private int _gravity = 5;
+    private int _y = 200;
+    private int _gravity = 6;
     private float _speed = 0;
     private float _jumpSpeed = 0;
     private Canvas _puck;
@@ -26,6 +26,7 @@ public class Character {
     private int _frame = 0;
     private int _frameY = 0;
     private int _frameTick = 0;
+    private int _maxJump = 30;
 	/////////////////////////////////////////////////////////////////////////////////////
 	//SETUP STUFF
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ public class Character {
     	}
     	
     	if(GameDataManager.getInstance().getJumping() && (GameDataManager.getInstance().getCurrentMap()[tileBellow][Math.round((_x + ( GameDataManager.getInstance().getTileWidth()/2))/ GameDataManager.getInstance().getTileWidth())] > 0)){
-    		_jumpSpeed = 30;
+    		_jumpSpeed = _maxJump;
     		GameDataManager.getInstance().setJumping(false);
     	
     	}
