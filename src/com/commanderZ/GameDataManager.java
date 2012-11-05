@@ -21,6 +21,7 @@ public class GameDataManager {
         private int _originalTileHeight = 67;
         private int _originalCharWidth = 100;
         private int _originalCharHeight = 140;
+        public boolean _paused = false;
         private int[][] _map;
 		/////////////////////////////////////////////////////////////////////////////////////
 		//STATIC FUNCTIONS
@@ -36,6 +37,9 @@ public class GameDataManager {
 		/////////////////////////////////////////////////////////////////////////////////////
 		//PUBLIC GET FUNCTIONS
 		/////////////////////////////////////////////////////////////////////////////////////
+		public boolean paused(){
+			return _paused;
+		}
 		public boolean getMovingLeft(){
 			return _movingLeft;
 		}
@@ -74,6 +78,9 @@ public class GameDataManager {
 		}
 		public int[][] getCurrentMap(){
 			return _map;
+		}
+		public void reset(){
+			
 		}
 		/////////////////////////////////////////////////////////////////////////////////////
 		//PUBLIC SET FUNCTIONS

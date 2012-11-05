@@ -15,8 +15,8 @@ public class Character {
 	/////////////////////////////////////////////////////////////////////////////////////
 	private Bitmap _character;
     private int _x =200;
-    private int _y = 200;
-    private int _gravity = 6;
+    private int _y = 400;
+    private int _gravity = 9;
     private float _speed = 0;
     private float _jumpSpeed = 0;
     private Canvas _puck;
@@ -26,7 +26,8 @@ public class Character {
     private int _frame = 0;
     private int _frameY = 0;
     private int _frameTick = 0;
-    private int _maxJump = 30;
+    private int _maxJump = 42;
+    private int _maxSpeed = 8;
 	/////////////////////////////////////////////////////////////////////////////////////
 	//SETUP STUFF
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -51,8 +52,11 @@ public class Character {
     	int tileRight = Math.round((_x + (GameDataManager.getInstance().getTileWidth()) + _speed)/ GameDataManager.getInstance().getTileWidth());
     	int tileLeft = Math.round((_x  + _speed - 15)/ GameDataManager.getInstance().getTileWidth());
     	
+    	TriggerTile trigger = TriggerTile.getTriggerTile(_x/ GameDataManager.getInstance().getTileWidth(), (_y/ GameDataManager.getInstance().getTileHeight()) + 1);
     	
-    	if(_frameTick < fps/6){
+    	
+    	
+    	if(_frameTick < fps/7){
     		_frameTick++;
     	}else{
     		_frameTick = 0;
@@ -118,14 +122,14 @@ public class Character {
     	
     	if(GameDataManager.getInstance().getMovingRight())
     	{
-    		if(_speed < 5){
+    		if(_speed < _maxSpeed){
     			_speed ++;
     		}
     		
     	}
     	else if(GameDataManager.getInstance().getMovingLeft())
     	{
-    		if(_speed > -5){
+    		if(_speed > - _maxSpeed){
     			_speed --;
     		}
     		
