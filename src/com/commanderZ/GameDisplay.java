@@ -20,22 +20,20 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 		//PRIVATE VARIABLES
 		/////////////////////////////////////////////////////////////////////////////////////
 		private SurfaceHolder _holder;
-        private GameDisplayThread _gameDisplayThread;
+        public GameDisplayThread _gameDisplayThread;
         private Rect _tileScreenLocation;
         private Rect _tileLocation;
         private Rect _backgroundSize;
         private Canvas _puck;
         private Bitmap _puckImage;
-        private Bitmap _tiles;
         private Bitmap _levelBitmap;
         private Canvas _level;
         private Rect _camera;
         private Rect _screen;
-        private Character _character;
         private int _mapHeight = 0;
         private int _mapWidth = 0;
         private int tileSheetWidth = 13;
-        private Bitmap _background;
+       
         
 		/////////////////////////////////////////////////////////////////////////////////////
 		//SETUP STUFF
@@ -56,11 +54,19 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 		private void init(){
 			_holder = getHolder();
 		    _holder.addCallback(this);
+		    
+		}
+		
+		public void start(){
+			//init();
+			
 		}
 		
 		@SuppressLint({ "UseValueOf", "NewApi" })
 		private void createBitmaps(){
-			
+			/*********************************************************************************************************************************
+			 * This creates all of the bitmaps needed for the scene and sets up all of the screen size stuff and cameras
+			 *********************************************************************************************************************************/
 			GameDataManager.getInstance().setDpi(240);
 			_tileScreenLocation = new Rect();
 			_tileLocation = new Rect();
@@ -68,14 +74,14 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			_screen = new Rect();
 			_backgroundSize =  new Rect();
 			
-			_tiles = BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.tilestitle);
-			_character = new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz));
-			_background =  BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.background1);
 			getMaxTileWidth();
 			int w =  _mapWidth, h =  GameDataManager.getInstance().getOriginalTileHeight() * GameDataManager.getInstance().getCurrentMap().length;
 			
 			
-			
+			GameDataManager.getInstance().setCurrentTiles(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.tilestitle));
+	    	GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz)));
+	    	GameDataManager.getInstance().setCurrentBackground(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.background1));
+	    	
 		
 			_camera.set(0,0,this.getWidth(),this.getHeight());
 			_screen.set(0,0,this.getWidth(),this.getHeight());
@@ -95,16 +101,25 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 		//HANDEL EVENTS
 		/////////////////////////////////////////////////////////////////////////////////////
 		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-			
+			/*********************************************************************************************************************************
+			 * This does nothing at the moment
+			 *********************************************************************************************************************************/
 		}
 
 		public void surfaceCreated(SurfaceHolder holder) {
+			/*********************************************************************************************************************************
+			 * This is called once the surface has been created and can be used
+			 *********************************************************************************************************************************/
 			createBitmaps();
 			_gameDisplayThread = new GameDisplayThread (holder, this);
 			_gameDisplayThread.setRunning(true);
 			_gameDisplayThread.start();
 		}
+		
 		public void surfaceDestroyed(SurfaceHolder holder) {
+			/*********************************************************************************************************************************
+			 * This is called when the surface is cleared from the screen
+			 *********************************************************************************************************************************/
 			 boolean retry = true;
 			 _gameDisplayThread.setRunning(false);
 			    while (retry) {
@@ -118,27 +133,32 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 
 		@Override
 		public void onDraw(Canvas canvas) {
-				
+				/*********************************************************************************************************************************
+				 * This happens every frame and handles the drawing 
+				 *********************************************************************************************************************************/
 				_puck.drawColor( 0,PorterDuff.Mode.CLEAR );
 				_puck.drawBitmap(_levelBitmap, 0,0 , null);
 		        
 		       
-		    	Bitmap charImage = _character.draw();
+		    	Bitmap charImage = GameDataManager.getInstance().getCharacter().draw();
 		        
-		        _tileScreenLocation.set( _character.getX() ,_character.getY(), _character.getX() +  GameDataManager.getInstance().getCharWidth(), _character.getY() +  GameDataManager.getInstance().getCharHeight());
+		        _tileScreenLocation.set( GameDataManager.getInstance().getCharacter().getX() ,GameDataManager.getInstance().getCharacter().getY(), GameDataManager.getInstance().getCharacter().getX() +  GameDataManager.getInstance().getCharWidth(), GameDataManager.getInstance().getCharacter().getY() +  GameDataManager.getInstance().getCharHeight());
 		        _tileLocation.set(0, 0 ,  GameDataManager.getInstance().getCharWidth() , GameDataManager.getInstance().getCharHeight());
 		        _puck.drawBitmap(charImage, _tileLocation, _tileScreenLocation, null); 
 
-		        canvas.drawBitmap(_background, _backgroundSize, _screen,null);
+		        canvas.drawBitmap(GameDataManager.getInstance().getBackground(), _backgroundSize, _screen,null);
 		        canvas.drawBitmap(_puckImage, _camera, _screen, null);
 		}
 		
 		public void updatePhysics(int fps){
-			int paddingBottom = (_camera.height()/3);
+			/*********************************************************************************************************************************
+			 * This happens every frame and updates pysics and the camera movement 
+			 *********************************************************************************************************************************/
+			int paddingBottom = 700;//(_camera.height()/3); //this fixed the clippping issue at the bottom but needs to be investigated more one day.
 	
-			int newX = _character.getX() - (_camera.width()/2);
+			int newX = GameDataManager.getInstance().getCharacter().getX() - (_camera.width()/2);
 			 
-			int newY = _character.getY() - _camera.height() + paddingBottom;
+			int newY = GameDataManager.getInstance().getCharacter().getY() - _camera.height() + paddingBottom;
 			 if(newX < 0){
 				 newX = 0;
 			 }else if(newX >  _mapWidth - _camera.width()){
@@ -154,7 +174,7 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 				
 				
 		
-			_character.updatePhysics(fps);
+			GameDataManager.getInstance().getCharacter().updatePhysics(fps);
 			
 		}
 		 
@@ -162,7 +182,9 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 		//OTHER FUNCTIONS
 		///////////////////////////////////////////////////////////////////////////////////// 
 		private Canvas drawTiles(Canvas canvas){
-			
+			/*********************************************************************************************************************************
+			 * This loop through the map and adds the tiles to the screen
+			 *********************************************************************************************************************************/
 			 int tileWidth = GameDataManager.getInstance().getOriginalTileWidth();
 		     int tileHeight = GameDataManager.getInstance().getOriginalTileHeight();
 		     int adjustedTileWidth =  GameDataManager.getInstance().getTileWidth();
@@ -190,13 +212,16 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 				     
 				        //Log.d("test", "dpi= " + dpi);
 				        //this draws the tile to the screen
-				        canvas.drawBitmap(_tiles, _tileLocation, _tileScreenLocation, null);
+				        canvas.drawBitmap(GameDataManager.getInstance().getTiles(), _tileLocation, _tileScreenLocation, null);
 		        	}
 		        }
 			 return canvas;
 		}
 		
 		private void getMaxTileWidth(){
+			/*********************************************************************************************************************************
+			 * This loops through the level to see what the longest row is then sets the map size accordingly. it should probably be renamed
+			 *********************************************************************************************************************************/
 			int adjustedTileWidth =  GameDataManager.getInstance().getTileWidth();
 			 for( int i =0 ;i < GameDataManager.getInstance().getCurrentMap().length ; i++){
 		        	

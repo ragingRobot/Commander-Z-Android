@@ -1,5 +1,9 @@
 package com.commanderZ;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+
 public class GameDataManager {
 		/////////////////////////////////////////////////////////////////////////////////////
 		//STATIC VARIABLES
@@ -23,6 +27,14 @@ public class GameDataManager {
         private int _originalCharHeight = 140;
         public boolean _paused = false;
         private int[][] _map;
+        
+        
+        
+        
+        private Bitmap _tiles;
+        private Character _character;
+        private Bitmap _background;
+        
 		/////////////////////////////////////////////////////////////////////////////////////
 		//STATIC FUNCTIONS
 		/////////////////////////////////////////////////////////////////////////////////////
@@ -80,8 +92,35 @@ public class GameDataManager {
 			return _map;
 		}
 		public void reset(){
+				_instance = null;
+				_instance = new GameDataManager();
+		
+		}
+		
+		
+		
+		
+		public Bitmap getTiles() {
+			// TODO Auto-generated method stub
+			return _tiles;
+	       
+		}
+		public Character getCharacter() {
+			// TODO Auto-generated method stub
+			
+			return _character;
+	    
 			
 		}
+		public Bitmap getBackground() {
+			// TODO Auto-generated method stub
+			
+			return _background;
+			
+		}
+		
+		
+		
 		/////////////////////////////////////////////////////////////////////////////////////
 		//PUBLIC SET FUNCTIONS
 		/////////////////////////////////////////////////////////////////////////////////////
@@ -112,10 +151,29 @@ public class GameDataManager {
 				 
 			 }
 		}
+		public void setCurrentTiles(Bitmap decodeResource) {
+			// TODO Auto-generated method stub
+			_tiles = decodeResource;
+	       
+		}
+		public void setCurrentCharacter(Character character) {
+			// TODO Auto-generated method stub
+			
+	        _character = character;
+	    
+			
+		}
+		public void setCurrentBackground(Bitmap decodeResource) {
+			// TODO Auto-generated method stub
+			
+	        _background = decodeResource;
+			
+		}
 		public void setCurrentMap(int[][] val){
 			_map = val;
 		}
 		/////////////////////////////////////////////////////////////////////////////////////
 		//END :D
 		/////////////////////////////////////////////////////////////////////////////////////
+		
 }

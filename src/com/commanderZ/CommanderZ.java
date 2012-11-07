@@ -2,6 +2,8 @@ package com.commanderZ;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,19 +16,24 @@ public class CommanderZ extends Activity implements Trigger {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//PRIVATE VARIABLES
 	/////////////////////////////////////////////////////////////////////////////////////
-	
+	private GameDisplay view;
 	/////////////////////////////////////////////////////////////////////////////////////
 	//SETUP STUFF
 	/////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	
     	DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.gamescreen); 
+		
+		
+		
+		setContentView(R.layout.gamescreen);
+		
+    	
+    	 
 		
 		Button leftButton = (Button) findViewById(R.id.button1);
 		leftButton.setOnTouchListener(leftListener);
@@ -42,12 +49,19 @@ public class CommanderZ extends Activity implements Trigger {
 		
 		Button jumpButton = (Button) findViewById(R.id.button4);
 		jumpButton.setOnTouchListener(jumpListener);
-    	
+		
+		view = (GameDisplay) findViewById(R.id.surfaceView1);
+		
+		
+		
     	createLevel();
         
     }
     public void createLevel(){
+    	
+    	
     	GameDataManager.getInstance().reset();
+		
     	GameDataManager.getInstance().setCurrentMap(new int[][] {{13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 												    			 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 												    			 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
@@ -62,7 +76,7 @@ public class CommanderZ extends Activity implements Trigger {
 																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 													    		 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
-																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
+																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,52,53,54,0,0,0,0,0,0,0,0,13},
 																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,55,0,55,0,13},
 																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ,0,0,0,0,0,0,55,0,0,0,0,0,13},
@@ -81,18 +95,20 @@ public class CommanderZ extends Activity implements Trigger {
 
 
 			
-			TriggerTile myTrigger = new TriggerTile(20,22, this);
-			TriggerTile myTrigger1 = new TriggerTile(21,22, this);
-			TriggerTile myTrigger2 = new TriggerTile(22,22, this);
+			TriggerTile myTrigger  = new TriggerTile(20,22, this, "death");
+			TriggerTile myTrigger1 = new TriggerTile(21,22, this, "death");
+			TriggerTile myTrigger2 = new TriggerTile(22,22, this, "death");
 			
-			TriggerTile myTrigger3 = new TriggerTile(24,22, this);
-			TriggerTile myTrigger4 = new TriggerTile(25,22, this);
-			TriggerTile myTrigger5 = new TriggerTile(26,22, this);
-			TriggerTile myTrigger6 = new TriggerTile(27,22, this);
-			TriggerTile myTrigger7 = new TriggerTile(28,22, this);
-			TriggerTile myTrigger8 = new TriggerTile(29,22, this);
-			TriggerTile myTrigger9 = new TriggerTile(30,22, this);
+			TriggerTile myTrigger3 = new TriggerTile(24,22, this, "death");
+			TriggerTile myTrigger4 = new TriggerTile(25,22, this, "death");
+			TriggerTile myTrigger5 = new TriggerTile(26,22, this, "death");
+			TriggerTile myTrigger6 = new TriggerTile(27,22, this, "death");
+			TriggerTile myTrigger7 = new TriggerTile(28,22, this, "death");
+			TriggerTile myTrigger8 = new TriggerTile(29,22, this, "death");
+			TriggerTile myTrigger9 = new TriggerTile(30,22, this, "death");
 			
+			
+			//view.start();
 			
     }
    
@@ -150,8 +166,15 @@ public class CommanderZ extends Activity implements Trigger {
 	//END :D
 	/////////////////////////////////////////////////////////////////////////////////////
 
-	public void trigger() {
-		//createLevel();
+	public void trigger(String name) {
+		
+		if(name == "death"){
+			/*
+			view._gameDisplayThread.setRunning(false);
+			createLevel();
+			view._gameDisplayThread.setRunning(true);
+			*/
+		}
 		
 	}
   

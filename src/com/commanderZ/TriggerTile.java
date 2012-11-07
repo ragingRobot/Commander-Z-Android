@@ -10,10 +10,12 @@ public class TriggerTile {
 	public int x = 0;
 	public int y = 0;
 	private Trigger _trigger;
+	private String _name ="";
 
 	public static ArrayList<TriggerTile> _tileList = new ArrayList<TriggerTile>();
 	
-	public TriggerTile( int x, int y, Trigger trig){
+	public TriggerTile( int x, int y, Trigger trig, String name){
+		this._name = name;
 		this.x = x;
 		this.y = y;
 		this._trigger = trig;
@@ -23,7 +25,7 @@ public class TriggerTile {
 	}
 	public void trigger(){
 		Log.d("test", "trigger called - x:"+this.x+" y:"+this.y);
-		this._trigger.trigger();
+		this._trigger.trigger(_name);
 	}
 	public static void addTrigger(TriggerTile tile){
 		
