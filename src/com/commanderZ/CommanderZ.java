@@ -169,11 +169,13 @@ public class CommanderZ extends Activity implements Trigger {
 	public void trigger(String name) {
 		
 		if(name == "death"){
-			/*
-			view._gameDisplayThread.setRunning(false);
+			//This doesnt work :(
+			view.clearThread();
+			GameDataManager.getInstance().reset();
 			createLevel();
-			view._gameDisplayThread.setRunning(true);
-			*/
+			view.createThread();
+			
+		
 		}
 		
 	}

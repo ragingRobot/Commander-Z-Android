@@ -31,10 +31,10 @@ public class GameDisplayThread extends Thread {
 	                 canvas = holder.lockCanvas();
 	                  synchronized (holder) {
 	                     // draw
-	                	  if(GameDataManager.getInstance().paused() == false ){
+	                	
 	                		  updatePhysics();
 	                     	gameDisplay.onDraw(canvas);
-	                	  }
+	                
 	                     
 	                     
 	                     
@@ -55,7 +55,7 @@ public class GameDisplayThread extends Thread {
 	            private void updatePhysics() {
 
 	            	
-	            	if(!GameDataManager.getInstance().paused()){
+	            	
 	                long now = System.currentTimeMillis();
 	 
 	     
@@ -78,7 +78,7 @@ public class GameDisplayThread extends Thread {
 	                
 	                gameDisplay.updatePhysics(fps);
 	                
-	            	}
+	            	
 	            }
 	     
 

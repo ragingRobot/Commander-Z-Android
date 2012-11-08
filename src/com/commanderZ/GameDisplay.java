@@ -51,22 +51,25 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			super( context, attrs, defStyle );
 			init();
 		}
-		private void init(){
+		public void init(){
 			_holder = getHolder();
 		    _holder.addCallback(this);
 		    
 		}
 		
-		public void start(){
-			//init();
+		public void reset(){
 			
+		
+		
 		}
+	
 		
 		@SuppressLint({ "UseValueOf", "NewApi" })
 		private void createBitmaps(){
 			/*********************************************************************************************************************************
 			 * This creates all of the bitmaps needed for the scene and sets up all of the screen size stuff and cameras
 			 *********************************************************************************************************************************/
+			Log.d("test", "createBitmaps called");
 			GameDataManager.getInstance().setDpi(240);
 			_tileScreenLocation = new Rect();
 			_tileLocation = new Rect();
@@ -110,25 +113,28 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			/*********************************************************************************************************************************
 			 * This is called once the surface has been created and can be used
 			 *********************************************************************************************************************************/
+			createThread();
+		}
+		
+		
+	
+		
+		public void createThread(){
+			Log.d("test", "create called");
+			_holder = getHolder();
+		    _holder.addCallback(this);
 			createBitmaps();
-			_gameDisplayThread = new GameDisplayThread (holder, this);
+			_gameDisplayThread = new GameDisplayThread (_holder, this);
 			_gameDisplayThread.setRunning(true);
 			_gameDisplayThread.start();
+			
 		}
 		
 		public void surfaceDestroyed(SurfaceHolder holder) {
 			/*********************************************************************************************************************************
 			 * This is called when the surface is cleared from the screen
 			 *********************************************************************************************************************************/
-			 boolean retry = true;
-			 _gameDisplayThread.setRunning(false);
-			    while (retry) {
-			        try {
-			        	_gameDisplayThread.join();
-			            retry = false;
-			        } catch (InterruptedException e) {
-			        }
-			    }
+			clearThread();
 		}
 
 		@Override
@@ -139,6 +145,7 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 				_puck.drawColor( 0,PorterDuff.Mode.CLEAR );
 				_puck.drawBitmap(_levelBitmap, 0,0 , null);
 		        
+				Log.d("test","draw being called");
 		       
 		    	Bitmap charImage = GameDataManager.getInstance().getCharacter().draw();
 		        
@@ -234,6 +241,21 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			 }
 			
 		}
+		
+		public void clearThread(){
+			 boolean retry = true;
+			 _gameDisplayThread.setRunning(false);
+			    while (retry) {
+			        try {
+			        	_gameDisplayThread.join();
+			            retry = false;
+			        } catch (InterruptedException e) {
+			        }
+			    }
+		
+		}
+		
+		
 		/////////////////////////////////////////////////////////////////////////////////////
 		//END :D
 		/////////////////////////////////////////////////////////////////////////////////////
