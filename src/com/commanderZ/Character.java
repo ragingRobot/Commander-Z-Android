@@ -16,7 +16,7 @@ public class Character {
 	private Bitmap _character;
     private int _x =200;
     private int _y = 400;
-    private int _gravity = 9;
+    private int _gravity = 22;
     private float _speed = 0;
     private float _jumpSpeed = 0;
     private Canvas _puck;
@@ -26,12 +26,14 @@ public class Character {
     private int _frame = 0;
     private int _frameY = 0;
     private int _frameTick = 0;
-    private int _maxJump = 42;
+    private int _maxJump = 60;
     private int _maxSpeed = 8;
 	/////////////////////////////////////////////////////////////////////////////////////
 	//SETUP STUFF
 	/////////////////////////////////////////////////////////////////////////////////////
-    public Character(Bitmap charImage){
+    public Character(Bitmap charImage,int startx , int starty){
+    	this._x = startx;
+    	this._y= starty;
     	this._character = charImage;
     	int w =  GameDataManager.getInstance().getTileWidth(), h =  GameDataManager.getInstance().getOriginalTileHeight() * 2;
 
@@ -80,12 +82,13 @@ public class Character {
     	
     	if(Math.floor(_jumpSpeed) > 0){
     		GameDataManager.getInstance().setJumping(false);
-    		_jumpSpeed -= _jumpSpeed * .2;
+    		_jumpSpeed -= _jumpSpeed * .15;
     		
-    		if(Math.floor(_jumpSpeed) > 0){
+    		if(Math.floor(_jumpSpeed) > 10){
     			_frame = 5;
     		}else{
     			_frame = 7;
+    		
     		}
     	}
     	
@@ -95,11 +98,9 @@ public class Character {
     	
     	}
     	
-    	if(Math.floor(_jumpSpeed) > 0 ){
+    	if(Math.floor(_jumpSpeed) < 10 ){
     		
-    		
-    	}else{
-    		_jumpSpeed = 0;
+    	_jumpSpeed = 0;
     	}
     	
     	

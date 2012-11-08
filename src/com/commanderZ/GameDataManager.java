@@ -16,11 +16,11 @@ public class GameDataManager {
 		private boolean _movingLeft = false;
 		private boolean _movingRight = false;
 		private boolean _jumping = false;
-		private int _tileHeight;
-        private int _tileWidth;
-        private int _charHeight;
-        private int _charWidth;
-        private int _dpi;
+		private int _tileHeight = 67;
+        private int _tileWidth = 67;
+        private int _charHeight = 70;
+        private int _charWidth = 50;
+        private int _dpi = 240;
         private int _originalTileWidth = 67;
         private int _originalTileHeight = 67;
         private int _originalCharWidth = 100;
@@ -94,10 +94,6 @@ public class GameDataManager {
 				_instance = new GameDataManager();
 		
 		}
-		
-		
-		
-		
 		public Bitmap getTiles() {
 			// TODO Auto-generated method stub
 			return _tiles;
@@ -116,9 +112,7 @@ public class GameDataManager {
 			return _background;
 			
 		}
-		
-		
-		
+
 		/////////////////////////////////////////////////////////////////////////////////////
 		//PUBLIC SET FUNCTIONS
 		/////////////////////////////////////////////////////////////////////////////////////

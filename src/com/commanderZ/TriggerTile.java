@@ -34,6 +34,11 @@ public class TriggerTile {
 		//_tileList[_tileList.length] = tile;
 		
 	}
+	public static void clearAll()
+	{
+		
+		_tileList.clear();
+	}
 	public static  TriggerTile getTriggerTile(int testx, int testy){
 		
 		Object[] list = _tileList.toArray();
