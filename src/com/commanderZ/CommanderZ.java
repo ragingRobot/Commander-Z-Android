@@ -1,5 +1,10 @@
 package com.commanderZ;
 
+import java.io.InputStream;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -56,13 +61,13 @@ public class CommanderZ extends Activity implements Trigger {
 		
 		
     	createLevel();
-        
+    	examineJSONFile();
     }
     public void createLevel(){
     	
     	
     
-    	
+    	GameDataManager.getInstance().setDpi(240);
     	
     	
     	GameDataManager.getInstance().setCurrentMap(new int[][] {{13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
@@ -114,11 +119,11 @@ public class CommanderZ extends Activity implements Trigger {
 			
 			TriggerTile myTrigger10 = new TriggerTile(31,22, this, "nextLevel");
 			
-			Character mychar =  new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz),200,600);
+		
 	    	GameDataManager.getInstance().setCurrentTiles(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.tilestitle));
 	    	GameDataManager.getInstance().setCurrentBackground(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.background1));
-	    	GameDataManager.getInstance().setCurrentCharacter(mychar);
-		
+	    	GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz),200,600));
+	    	
 			
 		
 			
@@ -194,7 +199,7 @@ public class CommanderZ extends Activity implements Trigger {
 	private void loadNextLevel(){
 
 		GameDataManager.getInstance().setCurrentTiles(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.tiles));
-    	GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz), 200,600));
+    	GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz), 200,700));
     	GameDataManager.getInstance().setCurrentMap(new int[][] {{13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 												    			 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 												    			 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
@@ -235,6 +240,38 @@ public class CommanderZ extends Activity implements Trigger {
 		
 		 view.updateLevel();
 	}
+	
+	
+	
+	void examineJSONFile()
+    {
+        try
+        {
+            String x = "";
+            InputStream is = this.getResources().openRawResource(R.raw.levels);
+            byte [] buffer = new byte[is.available()];
+            while (is.read(buffer) != -1);
+            String jsontext = new String(buffer);
+            JSONArray entries = new JSONArray(jsontext);
+
+       
+            x = "JSON parsed.\nThere are [" + entries.length() + "]\n\n";
+
+            int i;
+            for (i=0;i<entries.length();i++)
+            {
+                JSONObject post = entries.getJSONObject(i);
+                x += "------------\n";
+                x += "Date:" + post.getString("created_at") + "\n";
+                x += "Post:" + post.getString("text") + "\n\n";
+            }
+            Log.d("json",x);
+        }
+        catch (Exception je)
+        {
+        	Log.d("json","Error w/file: " + je.getMessage());
+        }
+    }
 	
   
 }
