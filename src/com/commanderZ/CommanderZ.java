@@ -186,7 +186,7 @@ public class CommanderZ extends Activity implements Trigger {
 	public void trigger(String name) {
 		
 		if(name == "death"){
-			GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz),200,600));
+			GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz),30,600));
 		}
 		
 		
@@ -197,9 +197,10 @@ public class CommanderZ extends Activity implements Trigger {
 	}
 	
 	private void loadNextLevel(){
-
+		 try
+	        {
 		GameDataManager.getInstance().setCurrentTiles(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.tilestitle));
-    	GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz), 200,700));
+    	GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz), 30,700));
     	GameDataManager.getInstance().setCurrentMap(new int[][] {{13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 												    			 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 												    			 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
@@ -220,10 +221,10 @@ public class CommanderZ extends Activity implements Trigger {
 																 {13,0,0,0,0,0,55,55,55,55,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,55,0,0,0,0,0,13},
 																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,55,0,0,13},
-																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,52,53,54,0,0,0,0,0,0,0,0,13},
+																 {13,0,0,55,55,0,0,0,0,0,55,55,0,0,0,55,55,0,0,0,52,53,53,54,0,0,0,0,0,0,0,0,13},
 																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
 																 {13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13},
-																 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+																 {1,1,1,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,1,1,1,1,1,1,1,1},
 																 {14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14},
 																 {14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14},
 																 {14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14},
@@ -233,12 +234,33 @@ public class CommanderZ extends Activity implements Trigger {
 
 
     		TriggerTile.clearAll();
+    		
+    		TriggerTile myTrigger  = new TriggerTile(3,22, this, "death");
+			TriggerTile myTrigger1 = new TriggerTile(4,22, this, "death");
+			TriggerTile myTrigger2 = new TriggerTile(5,22, this, "death");
+			TriggerTile myTrigger22 = new TriggerTile(6,22, this, "death");
+			TriggerTile myTrigger3 = new TriggerTile(7,22, this, "death");
+			TriggerTile myTrigger4 = new TriggerTile(8,22, this, "death");
+			TriggerTile myTrigger5 = new TriggerTile(9,22, this, "death");
+			TriggerTile myTrigger6 = new TriggerTile(10,22, this, "death");
+			TriggerTile myTrigger7 = new TriggerTile(11,22, this, "death");
+			TriggerTile myTrigger8 = new TriggerTile(12,22, this, "death");
+			TriggerTile myTrigger9 = new TriggerTile(13,22, this, "death");
+			
+			
+			
 			TriggerTile myTrigger10 = new TriggerTile(31,22, this, "nextLevel");
 			
 		
 	    	GameDataManager.getInstance().setCurrentBackground(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.background1));
 		
-		 view.updateLevel();
+	    	view.updateLevel();
+	        }
+		    catch (Exception je)
+	        {
+	        	Log.d("level load","Error: " + je.getMessage());
+	        }
+		 
 	}
 	
 	
@@ -252,26 +274,39 @@ public class CommanderZ extends Activity implements Trigger {
             byte [] buffer = new byte[is.available()];
             while (is.read(buffer) != -1);
             String jsontext = new String(buffer);
-            JSONArray entries = new JSONArray(jsontext);
+        
 
-       
-            x = "JSON parsed.\nThere are [" + entries.length() + "]\n\n";
-
-            int i;
-            for (i=0;i<entries.length();i++)
-            {
-                JSONObject post = entries.getJSONObject(i);
-                x += "------------\n";
-                x += "Date:" + post.getString("created_at") + "\n";
-                x += "Post:" + post.getString("text") + "\n\n";
-            }
-            Log.d("json",x);
+            JSONObject mainObject = new JSONObject(jsontext);
+            JSONArray contentObject = mainObject.getJSONArray("map");
+            
+            
+           // int[][] levelArray = convertJSONArray(contentObject);
+            
+            Log.d("json",contentObject.toString());
         }
         catch (Exception je)
         {
         	Log.d("json","Error w/file: " + je.getMessage());
         }
     }
+	
+	/*
+	int[][] convertJSONArray(JSONArray json){
+		
+				int[][] newArray = new int[json.length][json[0].length];
+			
+			
+			 
+			   for (int i=0;i<json.length;i++){
+				   for( int j=0; j < json[0].length ; j++ ){
+					   newArray[i][j] = Integer.parseInt(json[i][j].toString());
+				   }
+			   } 
+			   
+			   return newArray;
+		
+	}
+	*/
 	
   
 }
