@@ -24,7 +24,7 @@ public class TriggerTile {
 		
 	}
 	public void trigger(){
-		Log.d("test", "trigger called - x:"+this.x+" y:"+this.y);
+		Log.d("test", "trigger called - x:"+this.x+" y:"+this.y + " type:" + _name);
 		this._trigger.trigger(_name);
 	}
 	public static void addTrigger(TriggerTile tile){
