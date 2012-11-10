@@ -49,7 +49,7 @@ public class Character {
 	/////////////////////////////////////////////////////////////////////////////////////
     @SuppressLint("FloatMath")
 	public void updatePhysics(int fps){
-    	
+    	int cleartiles = 26;
     	int tileBellow = Math.round((_y + ( GameDataManager.getInstance().getTileHeight() * 2) + _gravity)/ GameDataManager.getInstance().getTileHeight());
     	int tileRight = Math.round((_x + (GameDataManager.getInstance().getTileWidth()) + _speed)/ GameDataManager.getInstance().getTileWidth());
     	int tileLeft = Math.round((_x  + _speed - 15)/ GameDataManager.getInstance().getTileWidth());
@@ -107,7 +107,7 @@ public class Character {
     	
 
     	if(tileBellow < GameDataManager.getInstance().getCurrentMap().length - 1){
-	    	if(GameDataManager.getInstance().getCurrentMap()[tileBellow][Math.round((_x + ( GameDataManager.getInstance().getTileWidth()/2))/ GameDataManager.getInstance().getTileWidth())] == 0){
+	    	if(GameDataManager.getInstance().getCurrentMap()[tileBellow][Math.round((_x + ( GameDataManager.getInstance().getTileWidth()/2))/ GameDataManager.getInstance().getTileWidth())] < cleartiles){
 	    		this._y += _gravity;
 	    	
 	    	}else{
@@ -115,7 +115,7 @@ public class Character {
 	    	}
     	}
     	
-    	if(GameDataManager.getInstance().getCurrentMap()[Math.round((_y - 10 )/ GameDataManager.getInstance().getTileHeight())][Math.round((_x + ( GameDataManager.getInstance().getTileWidth()/2))/ GameDataManager.getInstance().getTileWidth())] == 0){
+    	if(GameDataManager.getInstance().getCurrentMap()[Math.round((_y - 10 )/ GameDataManager.getInstance().getTileHeight())][Math.round((_x + ( GameDataManager.getInstance().getTileWidth()/2))/ GameDataManager.getInstance().getTileWidth())] < cleartiles){
 	    	
     		this._y -= _jumpSpeed;
     	}
@@ -147,7 +147,7 @@ public class Character {
     	
     	
     	if(_speed > 0){
-    		if(GameDataManager.getInstance().getCurrentMap()[Math.round((_y + ( GameDataManager.getInstance().getTileHeight()))/ GameDataManager.getInstance().getTileHeight())][tileRight] == 0){
+    		if(GameDataManager.getInstance().getCurrentMap()[Math.round((_y + ( GameDataManager.getInstance().getTileHeight()))/ GameDataManager.getInstance().getTileHeight())][tileRight] < cleartiles){
     			this._x += _speed;
 	    	}else{
 	    		this._x = (tileRight* GameDataManager.getInstance().getTileWidth()) -  GameDataManager.getInstance().getTileWidth();
@@ -157,7 +157,7 @@ public class Character {
     	
     	if(_speed < 0){
     		
-    		if(GameDataManager.getInstance().getCurrentMap()[Math.round((_y + ( GameDataManager.getInstance().getTileHeight()))/ GameDataManager.getInstance().getTileHeight())][tileLeft] == 0){
+    		if(GameDataManager.getInstance().getCurrentMap()[Math.round((_y + ( GameDataManager.getInstance().getTileHeight()))/ GameDataManager.getInstance().getTileHeight())][tileLeft] < cleartiles){
     			this._x += _speed;
 	    	}else{
 	    		this._x = (tileLeft* GameDataManager.getInstance().getTileWidth()) +  GameDataManager.getInstance().getTileWidth();
