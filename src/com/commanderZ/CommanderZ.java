@@ -31,7 +31,7 @@ public class CommanderZ extends Activity implements Trigger {
 	private int _resetX = 200;
 	private int _resetY = 600;
 	Trigger trigerlistener;
-	private String nextURL = "http://www.jmilstead.com/commanderz/levels.json";
+	private String nextURL = "start";
 	/////////////////////////////////////////////////////////////////////////////////////
 	//SETUP STUFF
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -74,10 +74,9 @@ public class CommanderZ extends Activity implements Trigger {
     	
     }
     public void createLevel(){
-    	
-    	
-    
     	GameDataManager.getInstance().setDpi(240);
+    	
+    /*
     	
     	
     	
@@ -117,8 +116,13 @@ public class CommanderZ extends Activity implements Trigger {
 	    	GameDataManager.getInstance().setCurrentBackground(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.background1));
 	    	GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz),_resetX ,_resetY));
 	    	
-			
-		
+			*/
+    	
+    	GameDataManager.getInstance().setCurrentTiles(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.tilestitle));
+    	GameDataManager.getInstance().setCurrentBackground(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.background1));
+    	GameDataManager.getInstance().setCurrentCharacter( new Character(BitmapFactory.decodeResource(getResources(), com.commanderZ.R.drawable.commanderz),_resetX ,_resetY));
+    	
+    	examineJSONFile();
 			
     }
    
@@ -203,19 +207,19 @@ public class CommanderZ extends Activity implements Trigger {
         try
         {
             String x = "";
+            InputStream is;
             
-            
-            URL url = new URL(nextURL);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-                                // gets the server json data
-                  /*  BufferedReader bufferedReader =
-                        new BufferedReader(new InputStreamReader(
-                                urlConnection.getInputStream()));
-                    */
+            if(nextURL.contains("http:")){
+	            URL url = new URL(nextURL);
+	            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+	            urlConnection.setRequestMethod("GET");
+	            urlConnection.connect();
+	            is =  urlConnection.getInputStream();
+            }else{
                     
-            InputStream is =  urlConnection.getInputStream();//this.getResources().openRawResource(R.raw.levels);
+            	  is = this.getResources().openRawResource(R.raw.start);
+            }
+          
             byte [] buffer = new byte[is.available()];
             while (is.read(buffer) != -1);
             String jsontext = new String(buffer);
@@ -276,7 +280,7 @@ public class CommanderZ extends Activity implements Trigger {
 		
 				int[][] newArray = null;
 				JSONArray currentRow = null;
-			
+				int length  = 0;
 			 
 			   for (int i=0;i<json.length();i++){
 				  
@@ -292,12 +296,13 @@ public class CommanderZ extends Activity implements Trigger {
 					
 				   
 				   if( i == 0 ){
-					   newArray = new int[json.length()][currentRow.length()];
+					   length = currentRow.length();
+					   newArray = new int[json.length()][length];
 					   
 				   }
 				   
 				   if(currentRow != null && newArray != null){
-					   for( int j=0; j < currentRow.length() ; j++ ){
+					   for( int j=0; j <  length ; j++ ){
 						   try {
 							newArray[i][j] = currentRow.getInt(j);
 							//Log.d("json value to insert", "" + currentRow.getInt(j));
