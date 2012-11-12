@@ -39,6 +39,9 @@ public class TriggerTile {
 		
 		_tileList.clear();
 	}
+	public String getName(){
+		return _name;
+	}
 	public static  TriggerTile getTriggerTile(int testx, int testy){
 		
 		Object[] list = _tileList.toArray();
