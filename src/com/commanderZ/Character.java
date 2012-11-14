@@ -28,6 +28,17 @@ public class Character {
 	private int _frameTick = 0;
 	private int _maxJump = 60;
 	private int _maxSpeed = 8;
+	
+	
+	private int _tileUp=0;
+	private int _tileUpRight=0;
+	private int _tileRight=0;
+	private int _tileDownRight=0;
+	private int _tileDown=0;
+	private int _tileDownLeft=0;
+	private int _tileLeft=0;
+	private int _tileUpLeft=0;
+	
 
 	// ///////////////////////////////////////////////////////////////////////////////////
 	// SETUP STUFF
@@ -53,17 +64,70 @@ public class Character {
 	@SuppressLint("FloatMath")
 	public void updatePhysics(int fps) {
 		int cleartiles = 26;
+		
+		
+		
 		int tileBellow = Math.round((_y + (GameDataManager.getInstance().getTileHeight() * 2) + _gravity) / GameDataManager.getInstance().getTileHeight());
 		int tileAbove = Math.round((_y + (GameDataManager.getInstance().getTileHeight() * 2))/ GameDataManager.getInstance().getTileHeight()) - 1;
 		int tileRight = Math.round((_x + (GameDataManager.getInstance().getTileWidth()) + _speed)/ GameDataManager.getInstance().getTileWidth());
 		int tileLeft = Math.round((_x + _speed - 15)/ GameDataManager.getInstance().getTileWidth());
-		int tileCurrentX = Math.round((_x + (GameDataManager.getInstance().getTileWidth() / 2))/ GameDataManager.getInstance().getTileWidth());
+		
+		
 		int tileHeight = GameDataManager.getInstance().getTileHeight();
 		int tileWidth = GameDataManager.getInstance().getTileWidth();
 		int[][] map = GameDataManager.getInstance().getCurrentMap();
+		
+		
+		
+		int tileCurrentX = Math.round((_x + ( GameDataManager.getInstance().getCharWidth() / 3))/tileWidth);
+		int tileCurrentY = Math.round((_y + (GameDataManager.getInstance().getCharHeight() - GameDataManager.getInstance().getCharHeight() / 3))/ tileHeight);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/***************************************************************************
+		 * This gets the values of the surrounding tiles
+		 ***************************************************************************/
+		_tileUp = map[tileCurrentY - 2][tileCurrentX];
+		_tileUpRight = map[tileCurrentY - 2][tileCurrentX + 1];
+		_tileRight = map[tileCurrentY][tileCurrentX + 1];
+		_tileDownRight = map[tileCurrentY + 1][tileCurrentX + 1];
+		_tileDown = map[tileCurrentY + 1][tileCurrentX];
+		_tileDownLeft = map[tileCurrentY + 1][tileCurrentX - 1];
+		_tileLeft = map[tileCurrentY][tileCurrentX - 1];
+		_tileUpLeft = map[tileCurrentY - 2][tileCurrentX - 1];
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
-		TriggerTile trigger = TriggerTile.getTriggerTile(_x / tileWidth,(_y / tileHeight) + 1);
+		TriggerTile trigger = TriggerTile.getTriggerTile(tileCurrentX,tileCurrentY);
 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/***************************************************************************
+		 * Animation
+		 ***************************************************************************/
+		
 		if (_frameTick < fps / 7) {
 			_frameTick++;
 		} else {
@@ -85,11 +149,28 @@ public class Character {
 				_frame = 0;
 			}
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/***************************************************************************
+		 * Jumping
+		 ***************************************************************************/
 
 		if (Math.floor(_jumpSpeed) > 0) {
-			GameDataManager.getInstance().setJumping(false);
-			_jumpSpeed -= _jumpSpeed * .15;
-
+			
+		
+		
+				GameDataManager.getInstance().setJumping(false);
+				_jumpSpeed -= _jumpSpeed * .15;
+			
+			
 			if (Math.floor(_jumpSpeed) > 10) {
 				_frame = 5;
 			} else {
@@ -98,8 +179,7 @@ public class Character {
 			}
 		}
 
-		if (GameDataManager.getInstance().getJumping()
-				&& (map[tileBellow][tileCurrentX] > cleartiles)) {
+		if (GameDataManager.getInstance().getJumping() && ( _tileDown > cleartiles)) {
 
 			if (trigger == null || trigger.getName() != "death") {
 				_jumpSpeed = _maxJump;
@@ -116,22 +196,46 @@ public class Character {
 			_jumpSpeed = 0;
 		}
 
-		if (tileBellow < GameDataManager.getInstance().getCurrentMap().length - 1) {
-			if (map[tileBellow][tileCurrentX] < cleartiles) {
+		
+			if (_tileDown < cleartiles) {
 				this._y += _gravity;
 
 			} else {
 				this._y = (tileBellow * tileHeight) - (tileHeight * 2);
 			}
-		}
+	
 
-		if (map[Math.round((_y - 10) / tileHeight)][tileCurrentX] < cleartiles) {
+		if ( _tileUp < cleartiles) {
 
 			this._y -= _jumpSpeed;
 		} else {
 
 			_jumpSpeed = 0;
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/***************************************************************************
+		 * Set moving speed
+		 ***************************************************************************/
 
 		if (GameDataManager.getInstance().getMovingRight()) {
 			if (_speed < _maxSpeed) {
@@ -155,46 +259,48 @@ public class Character {
 
 		if (_speed > 0) {
 
+			/*
 			// This checks diagonally right
-			if (_jumpSpeed == 0 && map[tileBellow][tileCurrentX] < cleartiles) {
-				if (map[tileBellow][tileRight] > cleartiles) {
+			if (_jumpSpeed == 0 && _tileDown < cleartiles) {
+				if (_tileDownRight > cleartiles) {
 					_jumpSpeed = 0;
-					this._x = (tileRight - 1) * tileWidth;
+					//this._x = (tileRight - 1) * tileWidth;
 				}
 			} else {
-				if (map[tileAbove][tileRight] > cleartiles) {
+				if (_tileUpRight > cleartiles) {
 					_speed = 0;
-					this._x = (tileRight - 1) * tileWidth;
+					//this._x = (tileRight - 1) * tileWidth;
 				}
 			}
+*/
+			if (_tileRight > cleartiles) {
 
-			if (map[Math.round((_y + (tileHeight)) / tileHeight)][tileRight] > cleartiles) {
-
-				this._x = (tileRight - 1) * tileWidth;
+				//this._x = (tileRight - 1) * tileWidth;
 				_speed = 0;
 
 			}
 
 		} else if (_speed < 0) {
-
+/*
 			// This checks diagonally left
-			if (_jumpSpeed == 0 && map[tileBellow][tileCurrentX] < cleartiles) {
-				if (map[tileBellow][tileLeft] > cleartiles) {
+			if (_jumpSpeed == 0 && _tileDown < cleartiles) {
+				if (_tileDownLeft > cleartiles) {
 					_jumpSpeed = 0;
-					this._x = (tileLeft + 1) * tileWidth;
+					//this._x = (tileLeft + 1) * tileWidth;
 				}
 			} else {
-				if (map[tileAbove][tileLeft] > cleartiles) {
+				if (_tileUpLeft > cleartiles) {
 					_speed = 0;
-					this._x = (tileLeft + 1) * tileWidth;
+					//this._x = (tileLeft + 1) * tileWidth;
 				}
 			}
+*/
+			if (_tileLeft > cleartiles) {
 
-			if (map[Math.round((_y + (tileHeight)) / tileHeight)][tileLeft] > cleartiles) {
-
-				this._x = (tileLeft + 1) * tileWidth;
+				//this._x = (tileLeft + 1) * tileWidth;
 				_speed = 0;
 			}
+			
 
 		}
 
