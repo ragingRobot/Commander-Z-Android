@@ -17,7 +17,8 @@ public class Character {
 	private int _x = 200;
 	private int _y = 400;
 	private int _gravity = 22;
-	private float _speed = 0;
+	private float _speedX = 0;
+	private float _speedY = 0;
 	private float _jumpSpeed = 0;
 	private Canvas _puck;
 	private Bitmap _puckImage;
@@ -66,9 +67,7 @@ public class Character {
 		int cleartiles = 26;
 	
 		int tileBellow = Math.round((_y + (GameDataManager.getInstance().getTileHeight() * 2) + _gravity) / GameDataManager.getInstance().getTileHeight());
-		int tileAbove = Math.round((_y + (GameDataManager.getInstance().getTileHeight() * 2))/ GameDataManager.getInstance().getTileHeight()) - 1;
-		int tileRight = Math.round((_x + (GameDataManager.getInstance().getTileWidth()) + _speed)/ GameDataManager.getInstance().getTileWidth());
-		int tileLeft = Math.round((_x + _speed - 15)/ GameDataManager.getInstance().getTileWidth());	
+	
 		
 		int tileHeight = GameDataManager.getInstance().getTileHeight();
 		int tileWidth = GameDataManager.getInstance().getTileWidth();
@@ -76,19 +75,21 @@ public class Character {
 	
 		int tileCurrentX = Math.round((_x + ( GameDataManager.getInstance().getCharWidth() / 3))/tileWidth);
 		int tileCurrentY = Math.round((_y + (GameDataManager.getInstance().getCharHeight() - GameDataManager.getInstance().getCharHeight() / 3))/ tileHeight);
-		
-		
+
+
+		int tileCurrentLeftX = Math.round((_x + 5 )/tileWidth);
+		int tileCurrentRightX = Math.round((_x + 20 + ( GameDataManager.getInstance().getCharWidth() / 3))/tileWidth);
 		/***************************************************************************
 		 * This gets the values of the surrounding tiles
 		 ***************************************************************************/
 		_tileUp = map[tileCurrentY - 2][tileCurrentX];
-		_tileUpRight = map[tileCurrentY - 2][tileCurrentX + 1];
-		_tileRight = map[tileCurrentY][tileCurrentX + 1];
-		_tileDownRight = map[tileCurrentY + 1][tileCurrentX + 1];
+		_tileUpRight = map[tileCurrentY - 1][tileCurrentRightX ];
+		_tileRight = map[tileCurrentY][tileCurrentRightX ];
+		_tileDownRight = map[tileCurrentY + 1][tileCurrentRightX ];
 		_tileDown = map[tileCurrentY + 1][tileCurrentX];
-		_tileDownLeft = map[tileCurrentY + 1][tileCurrentX - 1];
-		_tileLeft = map[tileCurrentY][tileCurrentX - 1];
-		_tileUpLeft = map[tileCurrentY - 2][tileCurrentX - 1];
+		_tileDownLeft = map[tileCurrentY + 1][tileCurrentLeftX];
+		_tileLeft = map[tileCurrentY][tileCurrentLeftX];
+		_tileUpLeft = map[tileCurrentY - 1][tileCurrentLeftX];
 		
 
 		TriggerTile trigger = TriggerTile.getTriggerTile(tileCurrentX,tileCurrentY);
@@ -144,14 +145,11 @@ public class Character {
 		
 		if (GameDataManager.getInstance().getJumping() && ( _tileDown > cleartiles)) {
 
-			if (trigger == null || trigger.getName() != "death") {
+			
 				
 				_jumpSpeed = _maxJump;
 				GameDataManager.getInstance().setJumping(false);
-			} else {
-				_jumpSpeed = 0;
-				GameDataManager.getInstance().setJumping(false);
-			}
+			
 
 		}
 
@@ -177,55 +175,58 @@ public class Character {
 			_jumpSpeed = 0;
 		}
 		
-
-		
+/*
+		_speedY += _gravity;
+		_speedY -= _jumpSpeed ;
+	*/	
 		
 		/***************************************************************************
 		 * Set moving speed
 		 ***************************************************************************/
 
 		if (GameDataManager.getInstance().getMovingRight()) {
-			if (_speed < _maxSpeed) {
-				_speed++;
+			if (_speedX < _maxSpeed) {
+				_speedX++;
 			}
 
 		} else if (GameDataManager.getInstance().getMovingLeft()) {
-			if (_speed > -_maxSpeed) {
-				_speed--;
+			if (_speedX > -_maxSpeed) {
+				_speedX--;
 			}
 
 		} else {
-			if (_speed > 0) {
-				_speed -= Math.abs(_speed) * .3;
+			if (_speedX > 0) {
+				_speedX -= Math.abs(_speedX) * .3;
 			}
 
-			if (_speed < 0) {
-				_speed += Math.abs(_speed) * .6;
+			if (_speedX < 0) {
+				_speedX += Math.abs(_speedX) * .6;
 			}
 		}
 
-		if (_speed > 0) {
+		if (_speedX > 0) {
 
 
 			if (_tileRight > cleartiles) {
 
 			
-				_speed = 0;
+				_speedX = 0;
 
 			}
 
-		} else if (_speed < 0) {
+		} else if (_speedX < 0) {
 
 			if (_tileLeft > cleartiles) {
 
 				
-				_speed = 0;
+				_speedX = 0;
 			}
 			
 
 		}
 
-		this._x += _speed;
+		this._x += _speedX;
+		this._y += _speedY;
 
 		_puck.drawColor(0, PorterDuff.Mode.CLEAR);
 		_tileScreenLocation.set(0, 0, GameDataManager.getInstance().getCharWidth(), GameDataManager.getInstance().getCharHeight());
