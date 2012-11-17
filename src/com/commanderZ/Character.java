@@ -48,8 +48,8 @@ public class Character {
 		this._x = startx;
 		this._y = starty;
 		this._character = charImage;
-		int w = GameDataManager.getInstance().getTileWidth(), h = GameDataManager
-				.getInstance().getOriginalTileHeight() * 2;
+		int w = GameDataManager.getInstance().getTileWidth();
+		int h = GameDataManager.getInstance().getOriginalCharHeight();
 
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
 		_puckImage = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE
@@ -124,6 +124,26 @@ public class Character {
 		
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		/***************************************************************************
+		 * Gravity
+		 ***************************************************************************/
+		
+		if (_tileDown < cleartiles) {
+			this._y += _gravity;
+
+		} else {
+			this._y = (tileBellow * tileHeight) - (tileHeight * 2);
+		}
+		
+		
+		
 		/***************************************************************************
 		 * Jumping
 		 ***************************************************************************/
@@ -159,12 +179,6 @@ public class Character {
 		}
 
 		
-			if (_tileDown < cleartiles) {
-				this._y += _gravity;
-
-			} else {
-				this._y = (tileBellow * tileHeight) - (tileHeight * 2);
-			}
 	
 
 		if ( _tileUp < cleartiles) {

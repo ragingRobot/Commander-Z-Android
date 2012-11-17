@@ -149,6 +149,8 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 					newY = _mapHeight - _camera.height();
 				 }
 				
+				newX -= (int) Math.round((newX - _camera.left) * .7);
+				newY -= (int) Math.round((newY - _camera.top) * .7);
 				_camera.set(  newX, newY ,newX + _camera.width(),newY + _camera.height());
 					
 					
