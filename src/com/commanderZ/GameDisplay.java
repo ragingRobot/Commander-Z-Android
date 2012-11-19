@@ -163,6 +163,11 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 		/////////////////////////////////////////////////////////////////////////////////////
 		//OTHER FUNCTIONS
 		///////////////////////////////////////////////////////////////////////////////////// 
+		public void updateTiles(){
+			_level.drawColor( 0,PorterDuff.Mode.CLEAR );
+			_level = drawTiles(_level);
+			
+		}
 		private Canvas drawTiles(Canvas canvas){
 			/*********************************************************************************************************************************
 			 * This loop through the map and adds the tiles to the screen
