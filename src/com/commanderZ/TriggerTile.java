@@ -47,16 +47,18 @@ public class TriggerTile {
 	public static  TriggerTile getTriggerTile(int testx, int testy){
 		
 		Object[] list = _tileList.toArray();
-		
+		TriggerTile item = null;; 
 		for( int i=0 ; i< list .length ; i++){
 			
-			TriggerTile item = (TriggerTile) list[i];
+			item = (TriggerTile) list[i];
 			if( item.y == testy  && item.x == testx ){
 				item.trigger();
-				return item;
+				
 			}
 		}
-		return null;
+		
+		return item;
+	
 	}
 }
 

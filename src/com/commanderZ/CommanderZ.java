@@ -225,22 +225,33 @@ public class CommanderZ extends Activity implements Trigger {
 						data.url = triggers.getJSONObject(i).getString("url");
 					}
 
-					if (triggers.getJSONObject(i).getString("type")
-							.contains("switch")) {
+					if (triggers.getJSONObject(i).getString("type").contains("switch")) {
+						
 						Log.d("test", triggers.getJSONObject(i).toString());
-						JSONArray changeList = triggers.getJSONObject(i)
-								.getJSONArray("tilesToChange");
+						JSONArray changeList = triggers.getJSONObject(i).getJSONArray("tilesToChange");
 						Log.d("test", changeList.toString());
-						data.x = changeList.getJSONObject(0).getInt("x");
-						data.y = changeList.getJSONObject(0).getInt("y");
-						data.value = changeList.getJSONObject(0)
-								.getInt("value");
-					}
+						
+						for( int tileCount = 0; tileCount < changeList.length(); tileCount ++){
+							data = new TriggerData();
+							data.x = changeList.getJSONObject(tileCount).getInt("x");
+							data.y = changeList.getJSONObject(tileCount).getInt("y");
+							data.value = changeList.getJSONObject(tileCount).getInt("value");
+							
+							TriggerTile newTriggerSwitch = new TriggerTile(triggers
+									.getJSONObject(i).getInt("x"), triggers
+									.getJSONObject(i).getInt("y"), trigerlistener,
+									triggers.getJSONObject(i).getString("type"), data);
+						}
+						
+						
+					}else{
 
 					TriggerTile newTrigger = new TriggerTile(triggers
 							.getJSONObject(i).getInt("x"), triggers
 							.getJSONObject(i).getInt("y"), trigerlistener,
 							triggers.getJSONObject(i).getString("type"), data);
+					
+					}
 					/*
 					 * if(triggers.getJSONObject(i).getString("type").contains(
 					 * "nextLevel")){ nextURL =

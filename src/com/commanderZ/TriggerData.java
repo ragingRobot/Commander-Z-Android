@@ -7,4 +7,5 @@ public class TriggerData {
 	public int y=0;
 	public int value=0;
 
+
 }
