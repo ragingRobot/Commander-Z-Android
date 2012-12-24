@@ -113,31 +113,41 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 				/*********************************************************************************************************************************
 				 * This happens every frame and handles the drawing 
 				 *********************************************************************************************************************************/
+				
+				//this compleatly clears the puck
 				_puck.drawColor( 0,PorterDuff.Mode.CLEAR );
+				
+				//this copys the tiles to the puck. idealy this will only update the areas that change one day lol
 				_puck.drawBitmap(_levelBitmap, 0,0 , null);
 		        
 			
 				if(GameDataManager.getInstance().getCharacter() != null){
+					
+					//this gets the image to draw from the character instance
 					Bitmap charImage = GameDataManager.getInstance().getCharacter().draw();
 		        
 			        _tileScreenLocation.set( GameDataManager.getInstance().getCharacter().getX() ,GameDataManager.getInstance().getCharacter().getY(), GameDataManager.getInstance().getCharacter().getX() +  GameDataManager.getInstance().getCharWidth(), GameDataManager.getInstance().getCharacter().getY() +  GameDataManager.getInstance().getCharHeight());
 			        _tileLocation.set(0, 0 ,  GameDataManager.getInstance().getCharWidth() , GameDataManager.getInstance().getCharHeight());
+			        
+			        //this draws the player to the screen
 			        _puck.drawBitmap(charImage, _tileLocation, _tileScreenLocation, null); 
 				}
-		        canvas.drawBitmap(GameDataManager.getInstance().getBackground(), _backgroundSize, _screen,null);
+				
+				
+		        canvas.drawBitmap(GameDataManager.getInstance().getBackground(), _screen, _screen, null);
 		        canvas.drawBitmap(_puckImage, _camera, _screen, null);
 		}
 		
 		public void updatePhysics(int fps){
 			/*********************************************************************************************************************************
-			 * This happens every frame and updates pysics and the camera movement 
+			 * This happens every frame and updates physics and the camera movement 
 			 *********************************************************************************************************************************/
 			if(GameDataManager.getInstance().getCharacter() != null){
-				int paddingBottom = 700;//(_camera.height()/3); //this fixed the clippping issue at the bottom but needs to be investigated more one day.
+				int paddingBottom = 250;//(_camera.height()/3); //this fixed the clippping issue at the bottom but needs to be investigated more one day.
 		
 				int newX = GameDataManager.getInstance().getCharacter().getX() - (_camera.width()/2);
 				 
-				int newY = GameDataManager.getInstance().getCharacter().getY() - _camera.height() + paddingBottom;
+				int newY = GameDataManager.getInstance().getCharacter().getY() + GameDataManager.getInstance().getCharHeight() -_camera.height() + paddingBottom;
 				 if(newX < 0){
 					 newX = 0;
 				 }else if(newX >  _mapWidth - _camera.width()){
