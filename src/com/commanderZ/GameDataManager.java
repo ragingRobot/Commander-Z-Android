@@ -16,6 +16,7 @@ public class GameDataManager {
 		private boolean _movingLeft = false;
 		private boolean _movingRight = false;
 		private boolean _jumping = false;
+		private boolean _running = false;
 		private int _tileHeight = 67;
         private int _tileWidth = 67;
         private int _charHeight = 70;
@@ -58,6 +59,10 @@ public class GameDataManager {
 		}
 		public boolean getJumping(){
 			return _jumping;
+		}
+		public boolean getRunning(){
+			
+			return _running;
 		}
 		public int getTileHeight(){
 			return _tileHeight;
@@ -124,6 +129,11 @@ public class GameDataManager {
 		}
 		public void setJumping(boolean val){
 			_jumping = val;
+		}
+		
+		public void setRunning(boolean val){
+			
+			_running = val;
 		}
 		public void setDpi(int val){
 			_dpi = val;

@@ -28,7 +28,8 @@ public class Character {
 	private int _frameY = 0;
 	private int _frameTick = 0;
 	private int _maxJump = 60;
-	private int _maxSpeed = 8;
+	private int _maxSpeed = 10;
+	private int _maxRun = 20;
 	private boolean _jumpStarted = false;
 	
 	private int _tileUp=0;
@@ -197,24 +198,32 @@ public class Character {
 		/***************************************************************************
 		 * Set moving speed
 		 ***************************************************************************/
-
+		
+		int maxMoveSpeed = _maxSpeed;
+		
+		if(GameDataManager.getInstance().getRunning()){
+			maxMoveSpeed = _maxRun;
+			
+		}
+		
+		
 		if (GameDataManager.getInstance().getMovingRight()) {
-			if (_speedX < _maxSpeed) {
+			if (_speedX < maxMoveSpeed) {
 				_speedX++;
 			}
 
 		} else if (GameDataManager.getInstance().getMovingLeft()) {
-			if (_speedX > -_maxSpeed) {
+			if (_speedX > -maxMoveSpeed) {
 				_speedX--;
 			}
 
 		} else {
 			if (_speedX > 0) {
-				_speedX -= Math.abs(_speedX) * .3;
+				_speedX -= Math.abs(_speedX) * .2;
 			}
 
 			if (_speedX < 0) {
-				_speedX += Math.abs(_speedX) * .6;
+				_speedX += Math.abs(_speedX) * .2;
 			}
 		}
 

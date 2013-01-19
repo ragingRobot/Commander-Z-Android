@@ -53,8 +53,8 @@ public class CommanderZ extends Activity implements Trigger {
 		Button rightButton = (Button) findViewById(R.id.button2);
 		rightButton.setOnTouchListener(rightListener);
 
-		Button shootButton = (Button) findViewById(R.id.button3);
-		shootButton.setOnTouchListener(shootListener);
+		Button runButton = (Button) findViewById(R.id.button3);
+		runButton.setOnTouchListener(runListener);
 
 		Button jumpButton = (Button) findViewById(R.id.button4);
 		jumpButton.setOnTouchListener(jumpListener);
@@ -111,13 +111,13 @@ public class CommanderZ extends Activity implements Trigger {
 		}
 	};
 
-	public OnTouchListener shootListener = new OnTouchListener() {
+	public OnTouchListener runListener = new OnTouchListener() {
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				// GameDataManager.getInstance().setMovingLeft(true);
+				GameDataManager.getInstance().setRunning(true);
 			}
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				// GameDataManager.getInstance().setMovingLeft(false);
+				GameDataManager.getInstance().setRunning(false);
 			}
 			return false;
 		}
