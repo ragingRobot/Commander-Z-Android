@@ -36,7 +36,7 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
         private int tileSheetWidth = 13;
         private int _height = 0;
         private int _width = 0;
-       
+        private int paddingBottom = 150;//this fixed the clippping issue at the bottom but needs to be investigated more one day.
         
 		/////////////////////////////////////////////////////////////////////////////////////
 		//SETUP STUFF
@@ -151,7 +151,7 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			 * This happens every frame and updates physics and the camera movement 
 			 *********************************************************************************************************************************/
 			if(GameDataManager.getInstance().getCharacter() != null){
-				int paddingBottom = 250;//this fixed the clippping issue at the bottom but needs to be investigated more one day.
+				
 		
 				int newX = GameDataManager.getInstance().getCharacter().getX() - (_camera.width()/2);
 				 
