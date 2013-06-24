@@ -30,9 +30,12 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
         private Canvas _level;
         private Rect _camera;
         private Rect _screen;
+        private Rect _backgroundRect;
         private int _mapHeight = 0;
         private int _mapWidth = 0;
         private int tileSheetWidth = 13;
+        private int _height = 0;
+        private int _width = 0;
        
         
 		/////////////////////////////////////////////////////////////////////////////////////
@@ -73,18 +76,24 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			/*********************************************************************************************************************************
 			 * This does nothing at the moment
 			 *********************************************************************************************************************************/
+			_width = width;
+			_height = height;
+			_holder = getHolder();
+		    _holder.addCallback(this);
+		    _backgroundRect = new Rect(0,0,GameDataManager.getInstance().getBackground().getWidth(),GameDataManager.getInstance().getBackground().getHeight());
+			createBitmaps();
+			_gameDisplayThread = new GameDisplayThread (_holder, this);
+			_gameDisplayThread.setRunning(true);
+			_gameDisplayThread.start();
+			
+			
 		}
 
 		public void surfaceCreated(SurfaceHolder holder) {
 			/*********************************************************************************************************************************
 			 * This is called once the surface has been created and can be used
 			 *********************************************************************************************************************************/
-			_holder = getHolder();
-		    _holder.addCallback(this);
-			createBitmaps();
-			_gameDisplayThread = new GameDisplayThread (_holder, this);
-			_gameDisplayThread.setRunning(true);
-			_gameDisplayThread.start();
+			
 		}
 		
 		
@@ -114,27 +123,26 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 				 * This happens every frame and handles the drawing 
 				 *********************************************************************************************************************************/
 				
-				//this compleatly clears the puck
+				//this completely clears the puck
 				_puck.drawColor( 0,PorterDuff.Mode.CLEAR );
 				
-				//this copys the tiles to the puck. idealy this will only update the areas that change one day lol
+				//this copies the tiles to the puck. idealy this will only update the areas that change one day lol
 				_puck.drawBitmap(_levelBitmap, 0,0 , null);
 		        
 			
 				if(GameDataManager.getInstance().getCharacter() != null){
 					
-					//this gets the image to draw from the character instance
-					Bitmap charImage = GameDataManager.getInstance().getCharacter().draw();
+					
 		        
 			        _tileScreenLocation.set( GameDataManager.getInstance().getCharacter().getX() ,GameDataManager.getInstance().getCharacter().getY(), GameDataManager.getInstance().getCharacter().getX() +  GameDataManager.getInstance().getCharWidth(), GameDataManager.getInstance().getCharacter().getY() +  GameDataManager.getInstance().getCharHeight());
 			        _tileLocation.set(0, 0 ,  GameDataManager.getInstance().getCharWidth() , GameDataManager.getInstance().getCharHeight());
 			        
 			        //this draws the player to the screen
-			        _puck.drawBitmap(charImage, _tileLocation, _tileScreenLocation, null); 
+			        _puck.drawBitmap(GameDataManager.getInstance().getCharacter().draw(), _tileLocation, _tileScreenLocation, null); 
 				}
 				
 				
-		        canvas.drawBitmap(GameDataManager.getInstance().getBackground(), _screen, _screen, null);
+		        canvas.drawBitmap(GameDataManager.getInstance().getBackground(), _backgroundRect, _screen, null);
 		        canvas.drawBitmap(_puckImage, _camera, _screen, null);
 		}
 		
@@ -143,7 +151,7 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			 * This happens every frame and updates physics and the camera movement 
 			 *********************************************************************************************************************************/
 			if(GameDataManager.getInstance().getCharacter() != null){
-				int paddingBottom = 250;//(_camera.height()/3); //this fixed the clippping issue at the bottom but needs to be investigated more one day.
+				int paddingBottom = 250;//this fixed the clippping issue at the bottom but needs to be investigated more one day.
 		
 				int newX = GameDataManager.getInstance().getCharacter().getX() - (_camera.width()/2);
 				 
@@ -182,12 +190,10 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			/*********************************************************************************************************************************
 			 * This loop through the map and adds the tiles to the screen
 			 *********************************************************************************************************************************/
-			 int tileWidth = GameDataManager.getInstance().getOriginalTileWidth();
-		     int tileHeight = GameDataManager.getInstance().getOriginalTileHeight();
-		     int adjustedTileWidth =  GameDataManager.getInstance().getTileWidth();
-		     int adjustedTileHeight = GameDataManager.getInstance().getTileHeight();
-		     _mapHeight = GameDataManager.getInstance().getCurrentMap().length * adjustedTileHeight;
-		     
+			 int tileWidth = GameDataManager.getInstance().getTileWidth();
+		     int tileHeight = GameDataManager.getInstance().getTileHeight();
+		    
+		     _mapHeight = GameDataManager.getInstance().getCurrentMap().length * tileHeight;
 		        for( int i =0 ;i < GameDataManager.getInstance().getCurrentMap().length ; i++){
 		        	
 
@@ -198,7 +204,7 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 				        //this sets the location of the tile on the game screen
 		        		//note: this is diff from as3 or javascript because the rect represents top left corner and bottom right corner
 		        		// instead of top left corner and width and height
-				        _tileScreenLocation.set( j * adjustedTileWidth , i * adjustedTileHeight, (j * adjustedTileWidth) + adjustedTileWidth, (i * adjustedTileHeight) + adjustedTileHeight);
+				        _tileScreenLocation.set( j * tileWidth , i * tileHeight, (j * tileWidth) + tileWidth, (i * tileHeight) + tileHeight);
 				        
 				        //this sets the location of the tile on the tile map
 				        //note: this is diff from as3 or javascript because the rect represents top left corner and bottom right corner
@@ -246,7 +252,7 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 		}
 		
 		public void updateLevel(){
-			GameDataManager.getInstance().setDpi(240);
+		
 			_tileScreenLocation = new Rect();
 			_tileLocation = new Rect();
 			_camera = new Rect();
@@ -254,15 +260,11 @@ public class GameDisplay extends SurfaceView  implements SurfaceHolder.Callback 
 			_backgroundSize =  new Rect();
 			
 			getMaxTileWidth();
-			int w =  _mapWidth, h =  GameDataManager.getInstance().getOriginalTileHeight() * GameDataManager.getInstance().getCurrentMap().length;
-			
-			
+			int w =  _mapWidth, h =  GameDataManager.getInstance().getTileHeight() * GameDataManager.getInstance().getCurrentMap().length;
 		
-	    	
-		
-			_camera.set(0,0,this.getWidth(),this.getHeight());
-			_screen.set(0,0,this.getWidth(),this.getHeight());
-			_backgroundSize.set(0,0, 920 , 1641 );
+			_camera.set(0,0,_width,_height);
+			_screen.set(0,0,_width,_height);
+			_backgroundSize.set(0,0, _width,_height );
 			
 			Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
 			_puckImage = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap

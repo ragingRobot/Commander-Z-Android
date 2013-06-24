@@ -1,21 +1,16 @@
 package com.commanderZ;
-
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
-import android.widget.Button;
 
-@SuppressLint("FloatMath")
 public class Character {
 	// ///////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE VARIABLES
 	// ///////////////////////////////////////////////////////////////////////////////////
 	private Bitmap _character;
 	private int _x = 200;
-	private int _y = 400;
+	private int _y = 600;
 	private int _gravity = 22;
 	private float _speedX = 0;
 	private float _speedY = 0;
@@ -27,19 +22,27 @@ public class Character {
 	private int _frame = 0;
 	private int _frameY = 0;
 	private int _frameTick = 0;
-	private int _maxJump = 60;
-	private int _maxSpeed = 10;
-	private int _maxRun = 20;
-	private boolean _jumpStarted = false;
-	
+	private int _maxJump = 80;
+	private int _maxSpeed = 20;
+	private int _maxRun = 30;
 	private int _tileUp=0;
-	private int _tileUpRight=0;
 	private int _tileRight=0;
-	private int _tileDownRight=0;
 	private int _tileDown=0;
-	private int _tileDownLeft=0;
 	private int _tileLeft=0;
-	private int _tileUpLeft=0;
+	private int cleartiles = 26;
+	private int tileBellow;
+	
+	
+	private int tileHeight;
+	int tileWidth;
+	int[][] map;
+
+	int tileCurrentX;
+	int tileCurrentY ;
+
+
+	int tileCurrentLeftX;
+	int tileCurrentRightX;
 	
 
 	// ///////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +53,7 @@ public class Character {
 		this._y = starty;
 		this._character = charImage;
 		int w = GameDataManager.getInstance().getTileWidth();
-		int h = GameDataManager.getInstance().getOriginalCharHeight();
+		int h = GameDataManager.getInstance().getCharHeight();
 
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
 		_puckImage = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE
@@ -63,39 +66,29 @@ public class Character {
 	// ///////////////////////////////////////////////////////////////////////////////////
 	// EVENT HANDELING
 	// ///////////////////////////////////////////////////////////////////////////////////
-	@SuppressLint("FloatMath")
 	public void updatePhysics(int fps) {
-		int cleartiles = 26;
+		tileBellow = Math.round((_y + (GameDataManager.getInstance().getTileHeight() * 2) + _gravity) / GameDataManager.getInstance().getTileHeight());
 	
-		int tileBellow = Math.round((_y + (GameDataManager.getInstance().getTileHeight() * 2) + _gravity) / GameDataManager.getInstance().getTileHeight());
+		tileHeight = GameDataManager.getInstance().getTileHeight();
+		tileWidth = GameDataManager.getInstance().getTileWidth();
+		map = GameDataManager.getInstance().getCurrentMap();
 	
-		
-		int tileHeight = GameDataManager.getInstance().getTileHeight();
-		int tileWidth = GameDataManager.getInstance().getTileWidth();
-		int[][] map = GameDataManager.getInstance().getCurrentMap();
-	
-		int tileCurrentX = Math.round((_x + ( GameDataManager.getInstance().getCharWidth() / 3))/tileWidth);
-		int tileCurrentY = Math.round((_y + (GameDataManager.getInstance().getCharHeight() - GameDataManager.getInstance().getCharHeight() / 3))/ tileHeight);
+		tileCurrentX = Math.round((_x + ( GameDataManager.getInstance().getCharWidth() / 3))/tileWidth);
+		tileCurrentY = Math.round((_y + (GameDataManager.getInstance().getCharHeight() - GameDataManager.getInstance().getCharHeight() / 3))/ tileHeight);
 
 
-		int tileCurrentLeftX = Math.round((_x + 5 )/tileWidth);
-		int tileCurrentRightX = Math.round((_x + 20 + ( GameDataManager.getInstance().getCharWidth() / 3))/tileWidth);
+		tileCurrentLeftX = Math.round((_x + 5 )/tileWidth);
+		tileCurrentRightX = Math.round((_x + 20 + ( GameDataManager.getInstance().getCharWidth() / 3))/tileWidth);
 		/***************************************************************************
 		 * This gets the values of the surrounding tiles
 		 ***************************************************************************/
 		_tileUp = map[tileCurrentY - 2][tileCurrentX];
-		_tileUpRight = map[tileCurrentY - 1][tileCurrentRightX ];
 		_tileRight = map[tileCurrentY][tileCurrentRightX ];
-		_tileDownRight = map[tileCurrentY + 1][tileCurrentRightX ];
 		_tileDown = map[tileCurrentY + 1][tileCurrentX];
-		_tileDownLeft = map[tileCurrentY + 1][tileCurrentLeftX];
 		_tileLeft = map[tileCurrentY][tileCurrentLeftX];
-		_tileUpLeft = map[tileCurrentY - 1][tileCurrentLeftX];
-		
 
-		TriggerTile trigger = TriggerTile.getTriggerTile(tileCurrentX,tileCurrentY);
+		TriggerTile trigger = TriggerTile.getTriggerTile(tileCurrentX,tileCurrentY);	
 
-		
 		/***************************************************************************
 		 * Animation
 		 ***************************************************************************/
@@ -127,20 +120,14 @@ public class Character {
 		
 		
 		
-		
-		
-		
-		
-		
 		/***************************************************************************
 		 * Gravity
 		 ***************************************************************************/
-		
 		if (_tileDown < cleartiles) {
 			this._y += _gravity;
 
 		} else {
-			this._y = (tileBellow * tileHeight) - (tileHeight * 2);
+			this._y = (tileCurrentY - 1)* tileHeight;
 		}
 		
 		
@@ -175,7 +162,7 @@ public class Character {
 		}
 
 		if (Math.floor(_jumpSpeed) < 10) {
-
+			GameDataManager.getInstance().setJumping(false);
 			_jumpSpeed = 0;
 		}
 
@@ -186,14 +173,11 @@ public class Character {
 
 			this._y -= _jumpSpeed;
 		} else {
-
+			GameDataManager.getInstance().setJumping(false);
 			_jumpSpeed = 0;
 		}
 		
-/*
-		_speedY += _gravity;
-		_speedY -= _jumpSpeed ;
-	*/	
+
 		
 		/***************************************************************************
 		 * Set moving speed
@@ -209,12 +193,12 @@ public class Character {
 		
 		if (GameDataManager.getInstance().getMovingRight()) {
 			if (_speedX < maxMoveSpeed) {
-				_speedX++;
+				_speedX+= 4;
 			}
 
 		} else if (GameDataManager.getInstance().getMovingLeft()) {
 			if (_speedX > -maxMoveSpeed) {
-				_speedX--;
+				_speedX-= 4;
 			}
 
 		} else {
@@ -250,20 +234,25 @@ public class Character {
 
 		this._x += _speedX;
 		this._y += _speedY;
-
-		_puck.drawColor(0, PorterDuff.Mode.CLEAR);
-		_tileScreenLocation.set(0, 0, GameDataManager.getInstance().getCharWidth(), GameDataManager.getInstance().getCharHeight());
-
-		_tileLocation.set(_frame * GameDataManager.getInstance().getOriginalCharWidth(), _frameY * GameDataManager.getInstance().getOriginalCharHeight(), _frame * GameDataManager.getInstance().getOriginalCharWidth() + GameDataManager.getInstance().getOriginalCharWidth(), _frameY * GameDataManager.getInstance().getOriginalCharHeight() + GameDataManager.getInstance().getOriginalCharHeight());
-
+		
+		
+		
 	
-		// this draws the tile to the screen
-		_puck.drawBitmap(_character, _tileLocation, _tileScreenLocation, null);
+		
+
+		
 
 	}
 
 	public Bitmap draw() {
+		_puck.drawColor(0, PorterDuff.Mode.CLEAR);
+		_tileScreenLocation.set(0, 0, GameDataManager.getInstance().getCharWidth(), GameDataManager.getInstance().getCharHeight());
 
+		_tileLocation.set(_frame * GameDataManager.getInstance().getCharWidth(), _frameY * GameDataManager.getInstance().getCharHeight(), _frame * GameDataManager.getInstance().getCharWidth() + GameDataManager.getInstance().getCharWidth(), _frameY * GameDataManager.getInstance().getCharHeight() + GameDataManager.getInstance().getCharHeight());
+
+	
+		// this draws the tile to the screen
+		_puck.drawBitmap(_character, _tileLocation, _tileScreenLocation, null);
 		return _puckImage;
 	}
 

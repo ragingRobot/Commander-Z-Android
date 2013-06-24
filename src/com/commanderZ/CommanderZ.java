@@ -1,18 +1,13 @@
 package com.commanderZ;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -66,7 +61,7 @@ public class CommanderZ extends Activity implements Trigger {
 	}
 
 	public void createLevel() {
-		GameDataManager.getInstance().setDpi(240);
+		
 
 		GameDataManager.getInstance().setCurrentTiles(
 				BitmapFactory.decodeResource(getResources(),
@@ -258,11 +253,8 @@ public class CommanderZ extends Activity implements Trigger {
 								data);
 
 					}
-					/*
-					 * if(triggers.getJSONObject(i).getString("type").contains(
-					 * "nextLevel")){ nextURL =
-					 * triggers.getJSONObject(i).getString("url"); }
-					 */
+					
+				
 				}
 
 				GameDataManager.getInstance().setCurrentBackground(

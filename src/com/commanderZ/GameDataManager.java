@@ -19,19 +19,10 @@ public class GameDataManager {
 		private boolean _running = false;
 		private int _tileHeight = 67;
         private int _tileWidth = 67;
-        private int _charHeight = 70;
-        private int _charWidth = 50;
-        private int _dpi = 240;
-        private int _originalTileWidth = 67;
-        private int _originalTileHeight = 67;
-        private int _originalCharWidth = 100;
-        private int _originalCharHeight = 140;
+        private int _charHeight = 140;
+        private int _charWidth = 100;
         public boolean _paused = false;
         private int[][] _map;
-        
-        
-        
-        
         private Bitmap _tiles;
         private Character _character;
         private Bitmap _background;
@@ -76,21 +67,8 @@ public class GameDataManager {
 		public int getCharWidth(){
 			return _charWidth;
 		}
-		public int getOriginalTileHeight(){
-			return _originalTileHeight;
-		}
-		public int getOriginalTileWidth(){
-			return _originalTileWidth;
-		}
-		public int getOriginalCharHeight(){
-			return _originalCharHeight;
-		}
-		public int getOriginalCharWidth(){
-			return _originalCharWidth;
-		}
-		public int getDpi(){
-			return _dpi;
-		}
+		
+		
 		public int[][] getCurrentMap(){
 			return _map;
 		}
@@ -135,27 +113,11 @@ public class GameDataManager {
 			
 			_running = val;
 		}
-		public void setDpi(int val){
-			_dpi = val;
-			 if(_dpi != 120){
-				 _tileWidth = _originalTileWidth / (_dpi/120);
-				 _tileHeight = _originalTileHeight  / (_dpi/120);
-				 
-				 _charWidth = _originalCharWidth / (_dpi/120);
-				 _charHeight = _originalCharHeight  / (_dpi/120);
-				 
-			 }else{
-				 _tileWidth =  _originalTileWidth;
-				 _tileHeight = _originalTileHeight;
-				 
-				 _charWidth =  _originalCharWidth;
-				 _charHeight = _originalCharHeight;
-				 
-			 }
-		}
+		
 		public void setCurrentTiles(Bitmap decodeResource) {
 			// TODO Auto-generated method stub
 			_tiles = decodeResource;
+			
 	       
 		}
 		public void setCurrentCharacter(Character character) {
